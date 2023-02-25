@@ -1,8 +1,11 @@
 import Head from 'next/head'
-import Header from "../components/Header";
-import Jackpot from "../components/Jackpot";
+import Header from '../components/Header'
+import Jackpots from '../components/Jackpots'
+import { useSelector } from 'react-redux'
 
 export default function Home() {
+  const { jackpots } = useSelector((state) => state.jackpots)
+
   return (
     <div className="min-h-screen">
       <Head>
@@ -12,7 +15,7 @@ export default function Home() {
 
       <div>
         <Header />
-        <Jackpot />
+        <Jackpots jackpots={jackpots} />
       </div>
     </div>
   )
