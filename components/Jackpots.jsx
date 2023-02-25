@@ -1,6 +1,3 @@
-import leopard from '../assets/turtle.png'
-import turtle from '../assets/octupus.png'
-import octupus from '../assets/leopard.jpg'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -42,7 +39,7 @@ const Jackpot = ({ jackpot }) => {
       </div>
       <div>
         <Link
-          href="/draws"
+          href={'/draws/' + jackpot.id}
           className="bg-green-500 hover:bg-rose-600 py-2 px-5
               rounded-md text-white font-semibold"
         >

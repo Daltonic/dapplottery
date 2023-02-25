@@ -1,6 +1,6 @@
 import Head from 'next/head'
-import DrawTime from '../components/DrawTime'
-import SubHeader from '../components/SubHeader'
+import DrawTime from '../../components/DrawTime'
+import SubHeader from '../../components/SubHeader'
 
 export default function Draws() {
   return (
