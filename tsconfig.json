@@ -20,5 +20,13 @@
     "incremental": true
   },
   "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/[id].jsx/draws.tsxdraws.tsx","pages/draws/[drawId].js", "pages/draws/[drawId].js" "pages/index.jsx"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/[id].jsx/draws.tsxdraws.tsx",
+    "pages/draws/[drawId].js",
+    "pages/draws/[drawId].js",
+    "pages/index.jsx"
+  ]
 }
