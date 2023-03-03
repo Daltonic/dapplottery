@@ -24,23 +24,30 @@ contract DappLottery is Ownable {
     struct ParticipantStruct {
         address account;
         string lotteryNumber;
+        bool paid;
     }
 
     struct LotteryResultStruct {
         uint256 id;
         bool completed;
+        bool paidout;
         uint256 timestamp;
         ParticipantStruct[] winners;
     }
 
-    uint256 serviceFee;
-    uint256 serviceAccount;
+    uint256 servicePercent;
+    address serviceAccount;
 
     mapping(uint256 => LotteryStruct) lotteries;
     mapping(uint256 => ParticipantStruct[]) lotteryParticipants;
     mapping(uint256 => string[]) lotteryLuckyNumbers;
     mapping(uint256 => mapping(uint256 => bool)) luckyNumberUsed;
     mapping(uint256 => LotteryResultStruct) lotteryResult;
+
+    constructor(address _serviceAccount, uint256 _servicePercent) {
+        serviceAccount = _serviceAccount;
+        servicePercent = _servicePercent;
+    }
 
     function createLottery(
         string memory title,
@@ -93,7 +100,8 @@ contract DappLottery is Ownable {
         lotteryParticipants[id].push(
             ParticipantStruct(
                 msg.sender,
-                lotteryLuckyNumbers[id][luckyNumberId]
+                lotteryLuckyNumbers[id][luckyNumberId],
+                false
             )
         );
         luckyNumberUsed[id][luckyNumberId] = true;
@@ -126,6 +134,22 @@ contract DappLottery is Ownable {
         lotteryResult[id].timestamp = block.timestamp;
     }
 
+    function payLotteryWinners(uint256 id) public onlyOwner {
+        require(lotteryResult[id].completed, "Lottery not completed yet");
+        require(!lotteryResult[id].paidout, "Lottery already paid out");
+
+        ParticipantStruct[] memory winners = lotteryResult[id].winners;
+        uint256 platformShare = (lotteries[id].prize * servicePercent) / 100;
+        uint256 sharesPerWinner = (lotteries[id].prize - platformShare) / winners.length;
+
+        for (uint256 i = 0; i < winners.length; i++) {
+            payTo(winners[i].account, sharesPerWinner);
+        }
+
+        payTo(serviceAccount, platformShare);
+        lotteryResult[id].paidout = true;
+    }
+
     function getLotteries() public view returns (LotteryStruct[] memory Lotteries) {
         Lotteries = new LotteryStruct[](_totalLotteries.current());
 
@@ -148,5 +172,10 @@ contract DappLottery is Ownable {
     
     function getLotteryResult(uint256 id) public view returns (LotteryResultStruct memory) {
         return lotteryResult[id];
+    }
+
+    function payTo(address to, uint256 amount) internal {
+        (bool success, ) = payable(to).call{value: amount}("");
+        require(success);
     }
 }
