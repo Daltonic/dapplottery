@@ -125,4 +125,28 @@ contract DappLottery is Ownable {
         lotteryResult[id].completed = true;
         lotteryResult[id].timestamp = block.timestamp;
     }
+
+    function getLotteries() public view returns (LotteryStruct[] memory Lotteries) {
+        Lotteries = new LotteryStruct[](_totalLotteries.current());
+
+        for (uint256 i = 1; i <= _totalLotteries.current(); i++) {
+            Lotteries[i - 1] = lotteries[i];
+        }
+    }
+
+    function getLottery(uint256 id) public view returns (LotteryStruct memory) {
+        return lotteries[id];
+    }
+    
+    function getLotteryParticipants(uint256 id) public view returns (ParticipantStruct[] memory) {
+        return lotteryParticipants[id];
+    }
+    
+    function getLotteryLuckyNumbers(uint256 id) public view returns (string[] memory) {
+        return lotteryLuckyNumbers[id];
+    }
+    
+    function getLotteryResult(uint256 id) public view returns (LotteryResultStruct memory) {
+        return lotteryResult[id];
+    }
 }
