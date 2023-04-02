@@ -45,8 +45,8 @@ contract DappLottery is Ownable {
     mapping(uint256 => mapping(uint256 => bool)) luckyNumberUsed;
     mapping(uint256 => LotteryResultStruct) lotteryResult;
 
-    constructor(address _serviceAccount, uint256 _servicePercent) {
-        serviceAccount = _serviceAccount;
+    constructor(uint256 _servicePercent) {
+        serviceAccount = msg.sender;
         servicePercent = _servicePercent;
     }
 
