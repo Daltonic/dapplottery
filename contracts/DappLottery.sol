@@ -35,8 +35,9 @@ contract DappLottery is Ownable {
         ParticipantStruct[] winners;
     }
 
-    uint256 servicePercent;
-    address serviceAccount;
+    address public serviceAccount;
+    uint256 public servicePercent;
+    uint256 public serviceBalance;
 
     mapping(uint256 => LotteryStruct) lotteries;
     mapping(uint256 => ParticipantStruct[]) lotteryParticipants;
@@ -53,18 +54,19 @@ contract DappLottery is Ownable {
         string memory title,
         string memory description,
         string memory image,
+        uint256 prize,
         uint256 ticketPrice,
         uint256 expiresAt
-    ) public payable {
+    ) public {
         require(bytes(title).length > 0, "title cannot be empty");
         require(bytes(description).length > 0, "description cannot be empty");
         require(bytes(image).length > 0, "image cannot be empty");
+        require(prize > 0 ether, "prize cannot be zero");
         require(ticketPrice > 0 ether, "ticketPrice cannot be zero");
         require(
             expiresAt > block.timestamp,
             "expireAt cannot be less than the future"
         );
-        require(msg.value > 0 ether, "prize cannot be zero");
 
         _totalLotteries.increment();
         LotteryStruct memory lottery;
@@ -73,9 +75,12 @@ contract DappLottery is Ownable {
         lottery.title = title;
         lottery.description = description;
         lottery.image = image;
-        lottery.prize = msg.value;
+        lottery.prize = prize;
+        lottery.ticketPrice = ticketPrice;
         lottery.createdAt = block.timestamp;
         lottery.expiresAt = expiresAt;
+
+        lotteries[lottery.id] = lottery;
     }
 
     function importLuckyNumbers(uint256 id, string[] memory luckyNumbers)
@@ -86,7 +91,6 @@ contract DappLottery is Ownable {
     }
 
     function buyTicket(uint256 id, uint256 luckyNumberId) public payable {
-        require(lotteries[id].id == id, "Lottery not found");
         require(
             !luckyNumberUsed[id][luckyNumberId],
             "Lucky number already used"
@@ -105,28 +109,43 @@ contract DappLottery is Ownable {
             )
         );
         luckyNumberUsed[id][luckyNumberId] = true;
+        serviceBalance += msg.value;
     }
 
-    function randomlySelectLuckyNumbers(uint256 id, uint256 numberOfWinners)
-        public
-        onlyOwner
-    {
-        require(lotteries[id].id == id, "Lottery not found");
+    function randomlySelectWinners(
+        uint256 id,
+        uint256 numOfWinners
+    ) public onlyOwner {
         require(!lotteryResult[id].completed, "Lottery have already been completed");
         require(
-            numberOfWinners <= lotteryParticipants[id].length,
+            numOfWinners <= lotteryParticipants[id].length,
             "Number of winners exceeds number of participants"
         );
 
-        ParticipantStruct[] storage participants = lotteryParticipants[id];
+        // Initialize an array to store the selected winners
+        ParticipantStruct[] memory winners = new ParticipantStruct[](numOfWinners);
+        ParticipantStruct[] memory participants = lotteryParticipants[id];
 
-        for (uint256 i = 0; i < numberOfWinners; i++) {
-            uint256 index = uint256(keccak256(abi.encodePacked(block.timestamp, i))) % participants.length;
-            lotteryResult[id].winners[i] = participants[index];
+        // Initialize the list of indices with the values 0, 1, ..., n-1
+        uint256[] memory indices = new uint256[](participants.length);
+        for (uint256 i = 0; i < participants.length; i++) {
+            indices[i] = i;
+        }
 
-            // Remove the selected participant from the list to prevent them from being selected again
-            participants[index] = participants[participants.length - 1];
-            participants.pop();
+        // Shuffle the list of indices using Fisher-Yates algorithm
+        for (uint256 i = participants.length - 1; i >= 1; i--) {
+            uint256 j = uint256(
+                keccak256(abi.encodePacked(block.timestamp, i))
+            ) % (i + 1);
+            uint256 temp = indices[j];
+            indices[j] = indices[i];
+            indices[i] = temp;
+        }
+
+        // Select the winners using the first numOfWinners indices
+        for (uint256 i = 0; i < numOfWinners; i++) {
+            winners[i] = participants[indices[i]];
+            lotteryResult[id].winners.push(winners[i]);
         }
 
         lotteryResult[id].id = id;
@@ -139,14 +158,16 @@ contract DappLottery is Ownable {
         require(!lotteryResult[id].paidout, "Lottery already paid out");
 
         ParticipantStruct[] memory winners = lotteryResult[id].winners;
-        uint256 platformShare = (lotteries[id].prize * servicePercent) / 100;
-        uint256 sharesPerWinner = (lotteries[id].prize - platformShare) / winners.length;
+        uint256 totalShares = lotteries[id].ticketPrice * lotteryParticipants[id].length;
+        uint256 platformShare = (totalShares * servicePercent) / 100 ;
+        uint256 netShare = totalShares - platformShare;
+        uint256 sharesPerWinner = netShare / winners.length;
 
-        for (uint256 i = 0; i < winners.length; i++) {
-            payTo(winners[i].account, sharesPerWinner);
-        }
+        for (uint256 i = 0; i < winners.length; i++) 
+        payTo(winners[i].account, sharesPerWinner);
 
         payTo(serviceAccount, platformShare);
+        serviceBalance -= totalShares;
         lotteryResult[id].paidout = true;
     }
 
