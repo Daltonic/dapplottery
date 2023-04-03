@@ -1,5 +1,8 @@
 export const jackpot_actions = {
   addJackpot: (state, action) => {
-    state.jackpot.push(action.payload)
+    state.jackpots.push(action.payload)
+  },
+  saveJackpot: (state, action) => {
+    state.jackpots = action.payload
   },
 }

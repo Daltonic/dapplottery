@@ -26,15 +26,21 @@ const Jackpot = ({ jackpot }) => {
     <div className="min-w-64 min-h-60 rounded-lg bg-white m-2 px-5 py-7 ">
       <div className="flex items-center pb-5">
         <div>
-          <Image src={jackpot.image} alt="icon" className="rounded-lg w-20" />
+          <Image
+            width={100}
+            height={512}
+            src={jackpot.image}
+            alt="icon"
+            className="rounded-lg w-20"
+          />
         </div>
         <div>
           <p className="text-green-300">ETH {jackpot.prize}</p>
-          <p className="text-sm text-gray-500">Next Draw: {jackpot.draw_date}</p>
+          <p className="text-sm text-gray-500">Next Draw: {jackpot.expiresAt}</p>
         </div>
       </div>
       <div className="pb-6">
-        <p className="font-semibold pb-2 text-slate-700">{jackpot.name}</p>
+        <p className="font-semibold pb-2 text-slate-700">{jackpot.title}</p>
         <p className="text-sm leading-5 text-gray-500">{jackpot.description}</p>
       </div>
       <div>
