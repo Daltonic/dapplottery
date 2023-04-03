@@ -1,8 +1,12 @@
 import networking from '../assets/networking.png'
 import background from '../assets/background.jpg'
 import Image from 'next/image'
+import { useSelector } from 'react-redux'
+import { connectWallet, truncate } from '@/services/blockchain'
 
 const Header = () => {
+  const { wallet } = useSelector((state) => state.walletState)
+
   return (
     <div
       className="px-5 md:px-40"
@@ -20,12 +24,22 @@ const Header = () => {
           <p>Contact</p>
         </div>
 
-        <div>
-          <a className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold">
+        {wallet ? (
+          <button
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+          hover:bg-rose-600 cursor-pointer font-semibold"
+          >
+            {truncate(wallet, 4, 4, 11)}
+          </button>
+        ) : (
+          <button
+            onClick={connectWallet}
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+          hover:bg-rose-600 cursor-pointer font-semibold"
+          >
             Connect Wallet
-          </a>
-        </div>
+          </button>
+        )}
       </div>
 
       <div className="flex items-center justify-between pb-5">
@@ -47,10 +61,12 @@ const Header = () => {
       </div>
 
       <div className="pb-10">
-        <a className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
-        cursor-pointer font-semibold py-2 px-5">
+        <button
+          className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
+        cursor-pointer font-semibold py-2 px-5"
+        >
           BUY TICKET NOW
-        </a>
+        </button>
       </div>
     </div>
   )

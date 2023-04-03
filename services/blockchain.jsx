@@ -1,27 +1,26 @@
-import abi from './artifacts/contracts/DappLotery.sol/DappLotery.json'
-import address from './artifacts/contractAddress.json'
-import { getGlobalState, setGlobalState } from './store'
+import abi from '@/artifacts/contracts/DappLottery.sol/DappLottery.json'
+import address from '@/artifacts/contractAddress.json'
+import { walletActions } from '@/store/wallet_reducer'
+import { store } from '@/store'
 import { ethers } from 'ethers'
 
-const { ethereum } = window
+const { updateWallet } = walletActions
 const contractAddress = address.address
 const contractAbi = abi.abi
-let tx
+let tx, ethereum
+
+if (typeof window !== 'undefined') {
+  ethereum = window.ethereum
+}
 
 const toWei = (num) => ethers.utils.parseEther(num.toString())
+const connectedAccount = () => store.getState().walletState.wallet
 
 const getEtheriumContract = async () => {
-  const connectedAccount = getGlobalState('connectedAccount')
-
-  if (connectedAccount) {
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const signer = provider.getSigner()
-    const contract = new ethers.Contract(contractAddress, contractAbi, signer)
-
-    return contract
-  } else {
-    return getGlobalState('contract')
-  }
+  const provider = new ethers.providers.Web3Provider(ethereum)
+  const signer = provider.getSigner()
+  const contract = new ethers.Contract(contractAddress, contractAbi, signer)
+  return contract
 }
 
 const isWallectConnected = async () => {
@@ -34,12 +33,12 @@ const isWallectConnected = async () => {
     })
 
     window.ethereum.on('accountsChanged', async () => {
-      setGlobalState('connectedAccount', accounts[0].toLowerCase())
+      store.dispatch(updateWallet(accounts[0].toLowerCase()))
       await isWallectConnected()
     })
 
     if (accounts.length) {
-      setGlobalState('connectedAccount', accounts[0].toLowerCase())
+      store.dispatch(updateWallet(accounts[0].toLowerCase()))
     } else {
       alert('Please connect wallet.')
       console.log('No accounts found.')
@@ -53,7 +52,7 @@ const connectWallet = async () => {
   try {
     if (!ethereum) return alert('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-    setGlobalState('connectedAccount', accounts[0].toLowerCase())
+    store.dispatch(updateWallet(accounts[0].toLowerCase()))
   } catch (error) {
     reportError(error)
   }
@@ -61,7 +60,18 @@ const connectWallet = async () => {
 
 const reportError = (error) => {
   console.log(error.message)
-  throw new Error('No ethereum object.')
 }
 
-export { isWallectConnected, connectWallet }
+const truncate = (text, startChars, endChars, maxLength) => {
+  if (text.length > maxLength) {
+    let start = text.substring(0, startChars)
+    let end = text.substring(text.length - endChars, text.length)
+    while (start.length + end.length < maxLength) {
+      start = start + '.'
+    }
+    return start + end
+  }
+  return text
+}
+
+export { isWallectConnected, connectWallet, truncate }
