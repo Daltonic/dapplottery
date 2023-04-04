@@ -4,13 +4,13 @@ import SubHeader from '../components/SubHeader'
 
 export default function Draws() {
   return (
-    <div className="min-h-screen">
+    <div>
       <Head>
         <title>Dapp Lottery | Results</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
+      <div className="min-h-screen">
         <SubHeader />
         <Result />
       </div>

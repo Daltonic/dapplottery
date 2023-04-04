@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { truncate } from '@/services/blockchain'
 
 const Jackpots = ({ jackpots }) => {
   return (
@@ -12,7 +13,7 @@ const Jackpots = ({ jackpots }) => {
         </p>
       </div>
 
-      <div className="flex items-center justify-center py-20 w-4/5 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-4 lg:gap-3 py-10 w-4/5 mx-auto">
         {jackpots.map((jackpot, i) => (
           <Jackpot jackpot={jackpot} key={i} />
         ))}
@@ -23,35 +24,31 @@ const Jackpots = ({ jackpots }) => {
 
 const Jackpot = ({ jackpot }) => {
   return (
-    <div className="min-w-64 min-h-60 rounded-lg bg-white m-2 px-5 py-7 ">
-      <div className="flex items-center pb-5">
-        <div>
-          <Image
-            width={100}
-            height={512}
-            src={jackpot.image}
-            alt="icon"
-            className="rounded-lg w-20"
-          />
-        </div>
+    <div className="w-full shadow-xl shadow-black rounded-md overflow-hidden bg-gray-800 my-2 px-3 py-5">
+      <div className="flex justify-start items-center space-x-2">
+        <Image
+          width={100}
+          height={512}
+          src={jackpot.image}
+          alt="icon"
+          className="rounded-lg w-20"
+        />
         <div>
           <p className="text-green-300">ETH {jackpot.prize}</p>
-          <p className="text-sm text-gray-500">Next Draw: {jackpot.expiresAt}</p>
+          <p className="text-sm text-gray-500">Draw On: {jackpot.expiresAt}</p>
         </div>
       </div>
-      <div className="pb-6">
-        <p className="font-semibold pb-2 text-slate-700">{jackpot.title}</p>
-        <p className="text-sm leading-5 text-gray-500">{jackpot.description}</p>
+      <div className="py-5">
+        <p className="font-semibold pb-2 text-green-300">{jackpot.title}</p>
+        <p className="text-sm leading-5 text-gray-500">{truncate(jackpot.description, 90, 3, 0)}</p>
       </div>
-      <div>
-        <Link
-          href={'/draws/' + jackpot.id}
-          className="bg-green-500 hover:bg-rose-600 py-2 px-5
+      <Link
+        href={'/draws/' + jackpot.id}
+        className="bg-green-500 hover:bg-rose-600 py-2 px-5
               rounded-md text-white font-semibold"
-        >
-          PLAY NOW
-        </Link>
-      </div>
+      >
+        PLAY NOW
+      </Link>
     </div>
   )
 }

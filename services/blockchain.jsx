@@ -25,7 +25,7 @@ const getEtheriumContract = async () => {
 
 const isWallectConnected = async () => {
   try {
-    if (!ethereum) return alert('Please install Metamask')
+    if (!ethereum) return notifyUser('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_accounts' })
 
     window.ethereum.on('chainChanged', (chainId) => {
@@ -40,7 +40,7 @@ const isWallectConnected = async () => {
     if (accounts.length) {
       store.dispatch(updateWallet(accounts[0].toLowerCase()))
     } else {
-      alert('Please connect wallet.')
+      notifyUser('Please connect wallet.')
       console.log('No accounts found.')
     }
   } catch (error) {
@@ -50,7 +50,7 @@ const isWallectConnected = async () => {
 
 const connectWallet = async () => {
   try {
-    if (!ethereum) return alert('Please install Metamask')
+    if (!ethereum) return notifyUser('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
     store.dispatch(updateWallet(accounts[0].toLowerCase()))
   } catch (error) {
@@ -60,6 +60,10 @@ const connectWallet = async () => {
 
 const reportError = (error) => {
   console.log(error.message)
+}
+
+const notifyUser = (msg) => {
+  console.log(msg)
 }
 
 const truncate = (text, startChars, endChars, maxLength) => {

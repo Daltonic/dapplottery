@@ -13,10 +13,53 @@ const getEtheriumContract = async () => {
   return contract
 }
 
-const getLotteries = async () => await (await getEtheriumContract()).functions.getLotteries()
+const getLotteries = async () => {
+  const lotteries = await (await getEtheriumContract()).functions.getLotteries()
+  return structureLotteries(lotteries[0])
+}
 const getLottery = async (id) => await (await getEtheriumContract()).functions.getLottery(id)
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp)
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const monthsOfYear = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+
+  const dayOfWeek = daysOfWeek[date.getDay()]
+  const monthOfYear = monthsOfYear[date.getMonth()]
+  const dayOfMonth = date.getDate()
+  const year = date.getFullYear()
+
+  return `${dayOfWeek} ${monthOfYear} ${dayOfMonth}, ${year}`
+}
+
+const structureLotteries = (lotteries) =>
+  lotteries.map((lottery) => ({
+    id: Number(lottery.id),
+    title: lottery.title,
+    description: lottery.description,
+    prize: fromWei(lottery.prize),
+    ticketPrice: fromWei(lottery.ticketPrice),
+    image: lottery.image,
+    createdAt: formatDate(Number(lottery.createdAt + '000')),
+    expiresAt: formatDate(Number(lottery.expiresAt)),
+    drawn: lottery.drawn,
+  }))
 
 module.exports = {
   getLotteries,
   getLottery,
+  structureLotteries,
 }
