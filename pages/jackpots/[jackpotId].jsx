@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import DrawTime from '../../components/DrawTime'
-import SubHeader from '../../components/SubHeader'
+import DrawTime from '@/components/DrawTime'
+import SubHeader from '@/components/SubHeader'
+import Generator from '@/components/Generator'
 import { getLottery } from '@/services/blockchain.srr'
 
 export default function Draws({ jackpot }) {
-  console.log(jackpot)
   return (
     <div className="min-h-screen">
       <Head>
@@ -15,6 +15,7 @@ export default function Draws({ jackpot }) {
       <div>
         <SubHeader />
         <DrawTime jackpot={jackpot} />
+        <Generator />
       </div>
     </div>
   )

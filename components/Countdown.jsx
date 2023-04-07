@@ -16,8 +16,8 @@ const Countdown = ({ timestamp }) => {
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000)
 
-  return timestamp && Date.now() > timestamp ? (
-    <div className="flex items-center justify-center space-x-3 pb-20 flex-wrap">
+  return timestamp && Date.now() < timestamp ? (
+    <div className="flex items-center justify-center space-x-3 flex-wrap">
       <div className="bg-white text-sm w-16 h-16 flex items-center flex-col justify-center rounded-md space-y-2 ">
         <p className="text-3xl text-gray-600 -light">{days}</p>
         <p className="text-xs font-semibold">DAYS</p>
@@ -36,7 +36,7 @@ const Countdown = ({ timestamp }) => {
       </div>
     </div>
   ) : (
-    <div className="flex items-center justify-center space-x-3 pb-20 flex-wrap">
+    <div className="flex items-center justify-center space-x-3 flex-wrap">
       <div className="bg-white text-sm w-16 h-16 flex items-center flex-col justify-center rounded-md space-y-2 ">
         <p className="text-3xl text-gray-600 -light">00</p>
         <p className="text-xs font-semibold">DAYS</p>

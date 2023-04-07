@@ -13,7 +13,16 @@ const DrawTime = ({ jackpot }) => {
         <p className="text-lg text-gray-500">{jackpot.description}</p>
       </div>
 
-      <Countdown />
+      <div className="flex flex-col justify-center items-center space-y-4 mb-6">
+        <Countdown timestamp={jackpot.expiresAt} />
+
+        <button
+          className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+        hover:bg-rose-600 cursor-pointer font-semibold"
+        >
+          Generate Lucky Numbers
+        </button>
+      </div>
 
       <div className="bg-white text-sm overflow-x-auto flex flex-col w-full sm:w-3/4 mx-auto p-5 rounded-md">
         <div className="pb-4">

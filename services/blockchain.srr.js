@@ -53,6 +53,7 @@ const structureLotteries = (lotteries) =>
     id: Number(lottery.id),
     title: lottery.title,
     description: lottery.description,
+    owner: lottery.owner,
     prize: fromWei(lottery.prize),
     ticketPrice: fromWei(lottery.ticketPrice),
     image: lottery.image,
