@@ -1,25 +1,27 @@
 import Head from 'next/head'
-import SubHeader from '../components/SubHeader'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux'
+import SubHeader from '../components/SubHeader'
+import { createJackpot } from '@/services/blockchain'
 
 export default function Create() {
   const { wallet } = useSelector((state) => state.walletState)
+  const router = useRouter()
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [prize, setPrize] = useState('')
-  const [ticketPrice, setTicketPrize] = useState('')
+  const [ticketPrice, setTicketPrice] = useState('')
   const [expiresAt, setExpiresAt] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if(!wallet) return toast.warning('Wallet not connected')
+    if (!wallet) return toast.warning('Wallet not connected')
 
     if (!title || !description || !imageUrl || !prize || !ticketPrice || !expiresAt) return
-
     const params = {
       title,
       description,
@@ -29,23 +31,31 @@ export default function Create() {
       expiresAt: new Date(expiresAt).getTime(),
     }
 
-    console.log(params)
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await createJackpot(params)
+          .then(async () => {
+            onReset()
+            router.push('/')
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Jackpot created successfully 👌',
+        error: 'Encountered error 🤯',
+      }
+    )
+  }
 
-    // await toast.promise(
-    //   new Promise(async (resolve, reject) => {
-    //     // await createAppartment(params)
-    //     //   .then(async () => {
-    //     //     onReset()
-    //     //     resolve()
-    //     //   })
-    //     //   .catch(() => reject())
-    //   }),
-    //   {
-    //     pending: 'Approve transaction...',
-    //     success: 'apartment added successfully 👌',
-    //     error: 'Encountered error 🤯',
-    //   }
-    // )
+  const onReset = () => {
+    setTitle('')
+    setDescription('')
+    setImageUrl('')
+    setPrize('')
+    setTicketPrice('')
+    setExpiresAt('')
   }
 
   return (
@@ -86,7 +96,7 @@ export default function Create() {
                 text-gray-700 leading-tight focus:outline-none
                 focus:shadow-outline"
                 id="imageUrl"
-                type="text"
+                type="url"
                 placeholder="Image URL"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
@@ -119,7 +129,7 @@ export default function Create() {
                 min={0.01}
                 placeholder="Ticket price"
                 value={ticketPrice}
-                onChange={(e) => setTicketPrize(e.target.value)}
+                onChange={(e) => setTicketPrice(e.target.value)}
                 required
               />
             </div>

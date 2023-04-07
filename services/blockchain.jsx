@@ -14,9 +14,9 @@ if (typeof window !== 'undefined') {
 }
 
 const toWei = (num) => ethers.utils.parseEther(num.toString())
-const connectedAccount = () => store.getState().walletState.wallet
+// const connectedAccount = () => store.getState().walletState.wallet
 
-const getEtheriumContract = async () => {
+const getEthereumContract = async () => {
   const provider = new ethers.providers.Web3Provider(ethereum)
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, contractAbi, signer)
@@ -59,6 +59,20 @@ const connectWallet = async () => {
   }
 }
 
+const createJackpot = async ({ title, description, imageUrl, prize, ticketPrice, expiresAt }) => {
+  try {
+    if (!ethereum) return notifyUser('Please install Metamask')
+    const connectedAccount = store.getState().walletState.wallet
+    const contract = await getEthereumContract()
+    tx = await contract.createLottery(title, description, imageUrl, toWei(prize), toWei(ticketPrice), expiresAt, {
+      from: connectedAccount,
+    })
+    await tx.wait()
+  } catch (error) {
+    reportError(error)
+  }
+}
+
 const reportError = (error) => {
   console.log(error.message)
 }
@@ -79,4 +93,4 @@ const truncate = (text, startChars, endChars, maxLength) => {
   return text
 }
 
-export { isWallectConnected, connectWallet, truncate }
+export { isWallectConnected, connectWallet, createJackpot, truncate }
