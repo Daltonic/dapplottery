@@ -17,7 +17,10 @@ const getLotteries = async () => {
   const lotteries = await (await getEtheriumContract()).functions.getLotteries()
   return structureLotteries(lotteries[0])
 }
-const getLottery = async (id) => await (await getEtheriumContract()).functions.getLottery(id)
+const getLottery = async (id) => {
+  const lottery = await (await getEtheriumContract()).functions.getLottery(id)
+  return structureLotteries([lottery[0]])[0]
+}
 
 function formatDate(timestamp) {
   const date = new Date(timestamp)
@@ -54,7 +57,8 @@ const structureLotteries = (lotteries) =>
     ticketPrice: fromWei(lottery.ticketPrice),
     image: lottery.image,
     createdAt: formatDate(Number(lottery.createdAt + '000')),
-    expiresAt: formatDate(Number(lottery.expiresAt)),
+    drawsAt: formatDate(Number(lottery.expiresAt)),
+    expiresAt: Number(lottery.expiresAt),
     drawn: lottery.drawn,
   }))
 

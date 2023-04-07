@@ -4,7 +4,6 @@ import Jackpots from '../components/Jackpots'
 import { getLotteries } from '@/services/blockchain.srr'
 
 export default function Home({ jackpots }) {
-  jackpots = JSON.parse(jackpots)
   return (
     <div>
       <Head>
@@ -23,6 +22,6 @@ export default function Home({ jackpots }) {
 export const getServerSideProps = async () => {
   const data = await getLotteries()
   return {
-    props: { jackpots: JSON.stringify(data) },
+    props: { jackpots: JSON.parse(JSON.stringify(data)) },
   }
 }

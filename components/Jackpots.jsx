@@ -35,7 +35,7 @@ const Jackpot = ({ jackpot }) => {
         />
         <div>
           <p className="text-green-300">ETH {jackpot.prize}</p>
-          <p className="text-sm text-gray-500">Draw On: {jackpot.expiresAt}</p>
+          <p className="text-sm text-gray-500">Draw On: {jackpot.drawsAt}</p>
         </div>
       </div>
       <div className="py-5">
@@ -43,7 +43,7 @@ const Jackpot = ({ jackpot }) => {
         <p className="text-sm leading-5 text-gray-500">{truncate(jackpot.description, 90, 3, 0)}</p>
       </div>
       <Link
-        href={'/draws/' + jackpot.id}
+        href={'/jackpots/' + jackpot.id}
         className="bg-green-500 hover:bg-rose-600 py-2 px-5
               rounded-md text-white font-semibold"
       >

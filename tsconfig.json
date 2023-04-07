@@ -24,9 +24,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/[id].jsx/draws.tsxdraws.tsx",
-    "pages/draws/[drawId].js",
-    "pages/draws/[drawId].js",
+    "pages/[id].jsx/jackpots.tsxjackpots.tsx",
+    "pages/jackpots/[jackpotId].js",
+    "pages/jackpots/[jackpotId].js",
     "pages/index.jsx"
   ]
 }
