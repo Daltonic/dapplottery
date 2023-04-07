@@ -26,12 +26,13 @@
     ]
   },
   "dependencies": {
-    "ethers": "^5.4.7",
     "@reduxjs/toolkit": "1.9.3",
+    "ethers": "^5.4.7",
     "next": "13.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-redux": "8.0.5"
+    "react-redux": "8.0.5",
+    "react-toastify": "9.1.2"
   },
   "devDependencies": {
     "@emotion/react": "11.10.5",

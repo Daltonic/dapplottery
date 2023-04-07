@@ -3,6 +3,7 @@ import background from '../assets/background.jpg'
 import Image from 'next/image'
 import { useSelector } from 'react-redux'
 import { connectWallet, truncate } from '@/services/blockchain'
+import Link from 'next/link'
 
 const Header = () => {
   const { wallet } = useSelector((state) => state.walletState)
@@ -61,12 +62,12 @@ const Header = () => {
       </div>
 
       <div className="pb-10">
-        <button
+        <Link href={'/create'}
           className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
-        cursor-pointer font-semibold py-2 px-5"
+        cursor-pointer font-semibold py-3 px-5"
         >
-          BUY TICKET NOW
-        </button>
+          Create Jackpot
+        </Link>
       </div>
     </div>
   )
