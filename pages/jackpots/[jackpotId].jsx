@@ -2,9 +2,9 @@ import Head from 'next/head'
 import DrawTime from '@/components/DrawTime'
 import SubHeader from '@/components/SubHeader'
 import Generator from '@/components/Generator'
-import { getLottery } from '@/services/blockchain.srr'
+import { getLottery, getLuckyNumbers } from '@/services/blockchain.srr'
 
-export default function Draws({ jackpot }) {
+export default function Draws({ jackpot, luckyNumbers }) {
   return (
     <div className="min-h-screen">
       <Head>
@@ -14,7 +14,7 @@ export default function Draws({ jackpot }) {
 
       <div>
         <SubHeader />
-        <DrawTime jackpot={jackpot} />
+        <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} />
         <Generator />
       </div>
     </div>
@@ -23,8 +23,12 @@ export default function Draws({ jackpot }) {
 
 export const getServerSideProps = async (context) => {
   const { jackpotId } = context.query
-  const data = await getLottery(jackpotId)
+  const jackpot = await getLottery(jackpotId)
+  const luckyNumbers = await getLuckyNumbers(jackpotId)
   return {
-    props: { jackpot: JSON.parse(JSON.stringify(data)) },
+    props: {
+      jackpot: JSON.parse(JSON.stringify(jackpot)),
+      luckyNumbers: JSON.parse(JSON.stringify(luckyNumbers)),
+    },
   }
 }

@@ -2,11 +2,13 @@ import { useRouter } from 'next/router'
 import Countdown from '@/components/Countdown'
 import { globalActions } from '@/store/global_reducer'
 import { useDispatch } from 'react-redux'
+import { FaEthereum } from 'react-icons/fa'
 
-const DrawTime = ({ jackpot }) => {
+const DrawTime = ({ jackpot, luckyNumbers }) => {
   const { setGeneratorModal } = globalActions
   const dispatch = useDispatch()
   const navigate = useRouter()
+
   return (
     <div className="py-10 px-5 bg-slate-100">
       <div className="flex flex-col items-center justify-center text-center py-10">
@@ -30,45 +32,44 @@ const DrawTime = ({ jackpot }) => {
       </div>
 
       <div className="bg-white text-sm overflow-x-auto flex flex-col w-full sm:w-3/4 mx-auto p-5 rounded-md">
-        <div className="pb-4">
-          <p className=" -semibold text-2xl">Select Your winning Lottery Numbers</p>
+        <div className="pb-4 text-center">
+          <p className="semibold text-2xl">Select Your winning Lottery Numbers</p>
         </div>
 
         <table className="table-auto">
           <thead>
             <tr>
-              <th className="px-4 py-2 ">Lottery</th>
-              <th className="px-4 py-2 ">Jackpot</th>
+              <th className="px-4 py-2 ">#</th>
               <th className="px-4 py-2 ">Price</th>
-              <th className="px-4 py-2 ">Time to Draw</th>
-              <th className="px-4 py-2 ">Sold</th>
-              <th className="px-4 py-2 ">Status</th>
+              <th className="px-4 py-2 ">Date to Draw</th>
+              <th className="px-4 py-2 ">Number</th>
+              <th className="px-4 py-2 ">Action</th>
             </tr>
           </thead>
           <tbody>
-            {Array(5)
-              .fill()
-              .map((item, i) => (
-                <tr key={i}>
-                  <td className="border px-4 py-2 font-semibold text-center">Cancer Charity</td>
-                  <td className="border px-4 py-2 font-semibold text-center">$200 million</td>
-                  <td className="border px-4 py-2 font-semibold text-center">$2 </td>
-                  <td className="border px-4 py-2 font-semibold text-center">
-                    Wednesday and Saturday
-                  </td>
-                  <td className="border px-4 py-2 font-semibold text-center">59%</td>
-                  <td className="border px-4 py-2 font-semibold">
-                    <div className="flex justify-center">
-                      <button
-                        onClick={() => navigate.push('/results')}
-                        className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
-                      >
-                        BUY NOW
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {luckyNumbers.map((luckyNumber, i) => (
+              <tr key={i}>
+                <td className="border px-4 py-2 font-semibold text-center">{i + 1}</td>
+                <td className="border px-4 py-2 font-semibold text-center">
+                  <div className="flex justify-center items-center space-x-1">
+                    <FaEthereum />
+                    <span>{jackpot.ticketPrice}</span>
+                  </div>
+                </td>
+                <td className="border px-4 py-2 font-semibold text-center">{jackpot.drawsAt}</td>
+                <td className="border px-4 py-2 font-semibold text-center">{luckyNumber}</td>
+                <td className="border px-4 py-2 font-semibold">
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => navigate.push('/results')}
+                      className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
+                    >
+                      BUY NOW
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

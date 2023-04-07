@@ -87,6 +87,7 @@ contract DappLottery is Ownable {
         public
     {
         require(lotteries[id].owner == msg.sender, "Unauthorized entity");
+        require(lotteryLuckyNumbers[id].length < 1, "Already generated");
         require(luckyNumbers.length > 0, "Lucky numbers cannot be zero");
         lotteryLuckyNumbers[id] = luckyNumbers;
     }

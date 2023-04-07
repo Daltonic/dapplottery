@@ -61,7 +61,7 @@ const connectWallet = async () => {
 const createJackpot = async ({ title, description, imageUrl, prize, ticketPrice, expiresAt }) => {
   try {
     if (!ethereum) return notifyUser('Please install Metamask')
-    const connectedAccount = store.getState().walletState.wallet
+    const connectedAccount = store.getState().globalState.wallet
     const contract = await getEthereumContract()
     tx = await contract.createLottery(
       title,
@@ -83,7 +83,7 @@ const createJackpot = async ({ title, description, imageUrl, prize, ticketPrice,
 const exportLuckyNumbers = async (id, luckyNumbers) => {
   try {
     if (!ethereum) return notifyUser('Please install Metamask')
-    const connectedAccount = store.getState().walletState.wallet
+    const connectedAccount = store.getState().globalState.wallet
     const contract = await getEthereumContract()
     tx = await contract.importLuckyNumbers(id, luckyNumbers, {
       from: connectedAccount,
