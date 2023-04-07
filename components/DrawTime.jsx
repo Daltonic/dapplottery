@@ -1,7 +1,11 @@
 import { useRouter } from 'next/router'
 import Countdown from '@/components/Countdown'
+import { globalActions } from '@/store/global_reducer'
+import { useDispatch } from 'react-redux'
 
 const DrawTime = ({ jackpot }) => {
+  const { setGeneratorModal } = globalActions
+  const dispatch = useDispatch()
   const navigate = useRouter()
   return (
     <div className="py-10 px-5 bg-slate-100">
@@ -17,6 +21,7 @@ const DrawTime = ({ jackpot }) => {
         <Countdown timestamp={jackpot.expiresAt} />
 
         <button
+          onClick={() => dispatch(setGeneratorModal('scale-100'))}
           className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
         hover:bg-rose-600 cursor-pointer font-semibold"
         >

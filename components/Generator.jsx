@@ -3,22 +3,26 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { FaTimes } from 'react-icons/fa'
 import { exportLuckyNumbers } from '@/services/blockchain'
+import { useSelector, useDispatch } from 'react-redux'
+import { globalActions } from '@/store/global_reducer'
 
 const Generator = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
   const { jackpotId } = router.query
+  const { setGeneratorModal } = globalActions
   const [luckyNumbers, setLuckyNumbers] = useState('')
+  const { generatorModal } = useSelector((state) => state.globalState)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    // console.log(jackpotId, generateLuckyNumbers(luckyNumbers))
 
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await exportLuckyNumbers(jackpotId, generateLuckyNumbers(luckyNumbers))
           .then(async () => {
             setLuckyNumbers('')
+            dispatch(setGeneratorModal('scale-0'))
             resolve()
           })
           .catch(() => reject())
@@ -49,7 +53,7 @@ const Generator = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
       items-center justify-center bg-black bg-opacity-50
-      transform transition-transform duration-300 scale-100`}
+      transform transition-transform duration-300 ${generatorModal}`}
     >
       <div
         className="bg-white shadow-xl shadow-[#0c2856] rounded-xl
@@ -58,7 +62,11 @@ const Generator = () => {
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="flex justify-between items-center">
             <p className="font-semibold">Generate Numbers</p>
-            <button type="button" className="border-0 bg-transparent focus:outline-none">
+            <button
+              onClick={() => dispatch(setGeneratorModal('scale-0'))}
+              type="button"
+              className="border-0 bg-transparent focus:outline-none"
+            >
               <FaTimes />
             </button>
           </div>
