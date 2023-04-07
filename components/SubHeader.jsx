@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import background from '@/assets/background.jpg'
 import { useSelector } from 'react-redux'
-import { connectWallet } from '@/services/blockchain'
+import { connectWallet, truncate } from '@/services/blockchain'
 
 const SubHeader = () => {
   const { wallet } = useSelector((state) => state.walletState)
+  
   return (
     <div
       style={{ background: `url('${background.src}') fixed no-repeat top/cover` }}

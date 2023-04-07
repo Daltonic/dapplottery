@@ -33,13 +33,14 @@ const isWallectConnected = async () => {
     })
 
     window.ethereum.on('accountsChanged', async () => {
-      store.dispatch(updateWallet(accounts[0].toLowerCase()))
+      store.dispatch(updateWallet(accounts[0]?.toLowerCase()))
       await isWallectConnected()
     })
 
     if (accounts.length) {
-      store.dispatch(updateWallet(accounts[0].toLowerCase()))
+      store.dispatch(updateWallet(accounts[0]?.toLowerCase()))
     } else {
+      store.dispatch(updateWallet(''))
       notifyUser('Please connect wallet.')
       console.log('No accounts found.')
     }
@@ -52,7 +53,7 @@ const connectWallet = async () => {
   try {
     if (!ethereum) return notifyUser('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-    store.dispatch(updateWallet(accounts[0].toLowerCase()))
+    store.dispatch(updateWallet(accounts[0]?.toLowerCase()))
   } catch (error) {
     reportError(error)
   }

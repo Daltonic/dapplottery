@@ -2,8 +2,11 @@ import Head from 'next/head'
 import SubHeader from '../components/SubHeader'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import { useSelector } from 'react-redux'
 
 export default function Create() {
+  const { wallet } = useSelector((state) => state.walletState)
+
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [imageUrl, setImageUrl] = useState('')
@@ -13,6 +16,8 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if(!wallet) return toast.warning('Wallet not connected')
+
     if (!title || !description || !imageUrl || !prize || !ticketPrice || !expiresAt) return
 
     const params = {
