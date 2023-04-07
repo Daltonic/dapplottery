@@ -43,17 +43,17 @@ describe('DappLottery', () => {
     ;[serviceAccount, participant1, participant2, participant3, participant4, participant5] =
       await ethers.getSigners()
 
-    contract = await Contract.deploy(serviceAccount.address, servicePercent)
+    contract = await Contract.deploy(servicePercent)
 
     await contract.deployed()
   })
 
   describe('Deployed State', () => {
     it('Should confirm deployment info', async () => {
-      result = await contract.serviceAccount()
+      result = await contract.owner()
       expect(result).to.be.equal(serviceAccount.address)
       result = await contract.servicePercent()
-      expect(result).to.be.equal(servicePercent)
+      expect(result.toNumber()).to.be.equal(servicePercent)
     })
   })
 
@@ -93,7 +93,7 @@ describe('DappLottery', () => {
 
     it('Should confirm ticket purchase', async () => {
       result = await contract.getLottery(lotteryId)
-      expect(result.participants).to.be.equal(0)
+      expect(result.participants.toNumber()).to.be.equal(0)
       result = await contract.getLotteryParticipants(lotteryId)
       expect(result).to.have.lengthOf(0)
 
@@ -102,7 +102,7 @@ describe('DappLottery', () => {
       })
 
       result = await contract.getLottery(lotteryId)
-      expect(result.participants).to.be.equal(1)
+      expect(result.participants.toNumber()).to.be.equal(1)
       result = await contract.getLotteryParticipants(lotteryId)
       expect(result).to.have.lengthOf(1)
     })
@@ -180,7 +180,7 @@ describe('DappLottery', () => {
 
     it('Should confirm payment of winners', async () => {
       result = await contract.serviceBalance()
-      expect(result).to.be.equal(toWei(numberToGenerate * fromWei(ticketPrice)))
+      expect(Number(result)).to.be.equal(Number(toWei(numberToGenerate * fromWei(ticketPrice))))
 
       result = await contract.getLotteryResult(lotteryId)
       expect(result.winners).to.have.lengthOf(numberOfWinners)
@@ -192,7 +192,7 @@ describe('DappLottery', () => {
       expect(result.paidout).to.be.equal(true)
 
       result = await contract.serviceBalance()
-      expect(result).to.be.equal(0)
+      expect(result.toNumber()).to.be.equal(0)
     })
   })
 })

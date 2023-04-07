@@ -17,6 +17,7 @@ contract DappLottery is Ownable {
         uint256 ticketPrice;
         uint256 participants;
         bool drawn;
+        address owner;
         uint256 createdAt;
         uint256 expiresAt;
     }
@@ -35,7 +36,6 @@ contract DappLottery is Ownable {
         ParticipantStruct[] winners;
     }
 
-    address public serviceAccount;
     uint256 public servicePercent;
     uint256 public serviceBalance;
 
@@ -46,7 +46,6 @@ contract DappLottery is Ownable {
     mapping(uint256 => LotteryResultStruct) lotteryResult;
 
     constructor(uint256 _servicePercent) {
-        serviceAccount = msg.sender;
         servicePercent = _servicePercent;
     }
 
@@ -77,6 +76,7 @@ contract DappLottery is Ownable {
         lottery.image = image;
         lottery.prize = prize;
         lottery.ticketPrice = ticketPrice;
+        lottery.owner = msg.sender;
         lottery.createdAt = block.timestamp;
         lottery.expiresAt = expiresAt;
 
@@ -86,6 +86,7 @@ contract DappLottery is Ownable {
     function importLuckyNumbers(uint256 id, string[] memory luckyNumbers)
         public
     {
+        require(lotteries[id].owner == msg.sender, "Unauthorized entity");
         require(luckyNumbers.length > 0, "Lucky numbers cannot be zero");
         lotteryLuckyNumbers[id] = luckyNumbers;
     }
@@ -115,7 +116,12 @@ contract DappLottery is Ownable {
     function randomlySelectWinners(
         uint256 id,
         uint256 numOfWinners
-    ) public onlyOwner {
+    ) public {
+        require(
+            lotteries[id].owner == msg.sender ||
+            lotteries[id].owner == owner(),
+            "Unauthorized entity"
+        );
         require(!lotteryResult[id].completed, "Lottery have already been completed");
         require(
             numOfWinners <= lotteryParticipants[id].length,
@@ -154,6 +160,11 @@ contract DappLottery is Ownable {
     }
 
     function payLotteryWinners(uint256 id) public onlyOwner {
+        require(
+            lotteries[id].owner == msg.sender ||
+            lotteries[id].owner == owner(),
+            "Unauthorized entity"
+        );
         require(lotteryResult[id].completed, "Lottery not completed yet");
         require(!lotteryResult[id].paidout, "Lottery already paid out");
 
@@ -166,7 +177,7 @@ contract DappLottery is Ownable {
         for (uint256 i = 0; i < winners.length; i++) 
         payTo(winners[i].account, sharesPerWinner);
 
-        payTo(serviceAccount, platformShare);
+        payTo(owner(), platformShare);
         serviceBalance -= totalShares;
         lotteryResult[id].paidout = true;
     }
