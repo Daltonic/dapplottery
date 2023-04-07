@@ -22,13 +22,15 @@ const DrawTime = ({ jackpot, luckyNumbers }) => {
       <div className="flex flex-col justify-center items-center space-y-4 mb-6">
         <Countdown timestamp={jackpot.expiresAt} />
 
-        <button
-          onClick={() => dispatch(setGeneratorModal('scale-100'))}
-          className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-        hover:bg-rose-600 cursor-pointer font-semibold"
-        >
-          Generate Lucky Numbers
-        </button>
+        {luckyNumbers.length < 1 ? (
+          <button
+            onClick={() => dispatch(setGeneratorModal('scale-100'))}
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+          hover:bg-rose-600 cursor-pointer font-semibold"
+          >
+            Generate Lucky Numbers
+          </button>
+        ) : null}
       </div>
 
       <div className="bg-white text-sm overflow-x-auto flex flex-col w-full sm:w-3/4 mx-auto p-5 rounded-md">
@@ -58,15 +60,13 @@ const DrawTime = ({ jackpot, luckyNumbers }) => {
                 </td>
                 <td className="border px-4 py-2 font-semibold text-center">{jackpot.drawsAt}</td>
                 <td className="border px-4 py-2 font-semibold text-center">{luckyNumber}</td>
-                <td className="border px-4 py-2 font-semibold">
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() => navigate.push('/results')}
-                      className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
-                    >
-                      BUY NOW
-                    </button>
-                  </div>
+                <td className="border px-4 py-2 font-semibold text-center">
+                  <button
+                    onClick={() => navigate.push('/results')}
+                    className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
+                  >
+                    BUY NOW
+                  </button>
                 </td>
               </tr>
             ))}

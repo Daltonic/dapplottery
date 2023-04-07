@@ -5,4 +5,10 @@ export const global_actions = {
   setGeneratorModal: (state, action) => {
     state.generatorModal = action.payload
   },
+  setJackpots: (state, action) => {
+    state.generatorModal = action.payload
+  },
+  setLuckyNumbers: (state, action) => {
+    state.luckyNumbers = action.payload
+  },
 }

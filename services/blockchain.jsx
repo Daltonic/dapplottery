@@ -2,9 +2,10 @@ import abi from '@/artifacts/contracts/DappLottery.sol/DappLottery.json'
 import address from '@/artifacts/contractAddress.json'
 import { globalActions } from '@/store/global_reducer'
 import { store } from '@/store'
+import { getLuckyNumbers } from '@/services/blockchain.srr'
 import { ethers } from 'ethers'
 
-const { updateWallet } = globalActions
+const { updateWallet, setLuckyNumbers } = globalActions
 const contractAddress = address.address
 const contractAbi = abi.abi
 let tx, ethereum
@@ -89,6 +90,8 @@ const exportLuckyNumbers = async (id, luckyNumbers) => {
       from: connectedAccount,
     })
     await tx.wait()
+    const numbers = await getLuckyNumbers(id)
+    store.dispatch(setLuckyNumbers(numbers))
   } catch (error) {
     reportError(error)
   }
