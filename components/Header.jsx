@@ -6,7 +6,7 @@ import { connectWallet, truncate } from '@/services/blockchain'
 import Link from 'next/link'
 
 const Header = () => {
-  const { wallet } = useSelector((state) => state.walletState)
+  const { wallet } = useSelector((state) => state.globalState)
   
   return (
     <div

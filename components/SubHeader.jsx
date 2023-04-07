@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { connectWallet, truncate } from '@/services/blockchain'
 
 const SubHeader = () => {
-  const { wallet } = useSelector((state) => state.walletState)
+  const { wallet } = useSelector((state) => state.globalState)
   
   return (
     <div

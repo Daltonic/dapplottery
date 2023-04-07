@@ -1,10 +1,10 @@
 import abi from '@/artifacts/contracts/DappLottery.sol/DappLottery.json'
 import address from '@/artifacts/contractAddress.json'
-import { walletActions } from '@/store/wallet_reducer'
+import { globalActions } from '@/store/global_reducer'
 import { store } from '@/store'
 import { ethers } from 'ethers'
 
-const { updateWallet } = walletActions
+const { updateWallet } = globalActions
 const contractAddress = address.address
 const contractAbi = abi.abi
 let tx, ethereum
@@ -14,7 +14,6 @@ if (typeof window !== 'undefined') {
 }
 
 const toWei = (num) => ethers.utils.parseEther(num.toString())
-// const connectedAccount = () => store.getState().walletState.wallet
 
 const getEthereumContract = async () => {
   const provider = new ethers.providers.Web3Provider(ethereum)
