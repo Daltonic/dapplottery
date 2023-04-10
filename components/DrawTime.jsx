@@ -5,6 +5,7 @@ import Countdown from '@/components/Countdown'
 import { globalActions } from '@/store/global_reducer'
 import { buyTicket } from '@/services/blockchain'
 import { toast } from 'react-toastify'
+import Link from 'next/link'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
   const { setGeneratorModal } = globalActions
@@ -38,21 +39,34 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           Buy Lottery Tickets Online
         </h4>
         <p className="text-lg text-gray-600 font-semibold capitalize">{jackpot.title}</p>
-        <p className="text-lg text-gray-500">{jackpot.description}</p>
+        <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot.description}</p>
       </div>
 
       <div className="flex flex-col justify-center items-center space-y-4 mb-6">
         <Countdown timestamp={jackpot.expiresAt} />
 
-        {wallet && luckyNumbers.length < 1 ? (
+        <div className="flex justify-center items-center space-x-2">
           <button
+            disabled={!wallet && luckyNumbers.length > 1}
             onClick={() => dispatch(setGeneratorModal('scale-100'))}
-            className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold"
+            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 font-semibold
+            ${
+              Date.now() < jackpot.expiresAt ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-600'
+            }
+            `}
           >
             Generate Lucky Numbers
           </button>
-        ) : null}
+
+          <Link
+            href={`/results/` + jackpot.id}
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-[#0c2856]
+            hover:bg-[#1a396c] cursor-pointer font-semibold text-white"
+          >
+            Draw Result
+          </Link>
+        </div>
       </div>
 
       <div className="bg-white text-sm overflow-x-auto flex flex-col w-full sm:w-3/4 mx-auto p-5 rounded-md">

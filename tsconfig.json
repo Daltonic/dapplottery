@@ -27,6 +27,8 @@
     "pages/[id].jsx/jackpots.tsxjackpots.tsx",
     "pages/jackpots/[jackpotId].js",
     "pages/jackpots/[jackpotId].js",
-    "pages/index.jsx"
+    "pages/index.jsx",
+    "pages/results/[resultId].jsx",
+    "pages/results/[resultId].jsx"
   ]
 }

@@ -34,7 +34,7 @@ const Jackpot = ({ jackpot }) => {
           className="rounded-lg w-20"
         />
         <div>
-          <p className="text-green-300">ETH {jackpot.prize}</p>
+          <p className="text-green-300">Upto: {jackpot.prize} ETH</p>
           <p className="text-sm text-gray-500">Draw On: {jackpot.drawsAt}</p>
         </div>
       </div>
