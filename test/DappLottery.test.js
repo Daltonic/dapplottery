@@ -174,8 +174,6 @@ describe('DappLottery', () => {
       await contract.connect(participant5).buyTicket(lotteryId, numberToGenerate - 5, {
         value: ticketPrice,
       })
-
-      await contract.randomlySelectWinners(lotteryId, numberOfWinners)
     })
 
     it('Should confirm payment of winners', async () => {
@@ -183,12 +181,13 @@ describe('DappLottery', () => {
       expect(Number(result)).to.be.equal(Number(toWei(numberToGenerate * fromWei(ticketPrice))))
 
       result = await contract.getLotteryResult(lotteryId)
-      expect(result.winners).to.have.lengthOf(numberOfWinners)
+      expect(result.winners).to.have.lengthOf(0)
       expect(result.paidout).to.be.equal(false)
 
-      await contract.payLotteryWinners(lotteryId)
+      await contract.randomlySelectWinners(lotteryId, numberOfWinners)
 
       result = await contract.getLotteryResult(lotteryId)
+      expect(result.winners).to.have.lengthOf(numberOfWinners)
       expect(result.paidout).to.be.equal(true)
 
       result = await contract.serviceBalance()

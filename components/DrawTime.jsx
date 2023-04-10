@@ -31,6 +31,11 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       }
     )
   }
+  
+  const onGenerate = () => {
+    if(luckyNumbers.length > 0) return toast.warning("Already generated")
+    dispatch(setGeneratorModal('scale-100'))
+  }
 
   return (
     <div className="py-10 px-5 bg-slate-100">
@@ -46,18 +51,22 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
         <Countdown timestamp={jackpot.expiresAt} />
 
         <div className="flex justify-center items-center space-x-2">
-          <button
-            disabled={!wallet && luckyNumbers.length > 1}
-            onClick={() => dispatch(setGeneratorModal('scale-100'))}
-            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-            hover:bg-rose-600 font-semibold
-            ${
-              Date.now() < jackpot.expiresAt ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-600'
-            }
-            `}
-          >
-            Generate Lucky Numbers
-          </button>
+          {wallet.toLowerCase() == jackpot.owner ? (
+            <button
+              disabled={jackpot.expiresAt < Date.now()}
+              onClick={onGenerate}
+              className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+                hover:bg-rose-600 font-semibold
+                ${
+                  jackpot.expiresAt < Date.now()
+                    ? 'opacity-50 cursor-not-allowed'
+                    : 'hover:bg-rose-600'
+                }
+                `}
+            >
+              Generate Lucky Numbers
+            </button>
+          ) : null}
 
           <Link
             href={`/results/` + jackpot.id}

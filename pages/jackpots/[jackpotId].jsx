@@ -26,7 +26,11 @@ export default function Draws({ jackpot, lotteryNumbers, numbersPurchased }) {
 
       <div>
         <SubHeader />
-        <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} participants={purchasedNumbers} />
+        <DrawTime
+          jackpot={jackpot}
+          luckyNumbers={luckyNumbers}
+          participants={purchasedNumbers}
+        />
         <Generator />
       </div>
     </div>

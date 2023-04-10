@@ -1,44 +1,48 @@
 import Link from 'next/link'
 import Identicon from 'react-identicons'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { FaEthereum } from 'react-icons/fa'
 import Countdown from '@/components/Countdown'
 import { truncate } from '@/services/blockchain'
 import { globalActions } from '@/store/global_reducer'
 
-const Result = ({ jackpot, participants }) => {
+const Result = ({ jackpot, participants, result }) => {
+  const { wallet } = useSelector((state) => state.globalState)
   const { setWinnerModal } = globalActions
   const dispatch = useDispatch()
 
   return (
-    <div className="mx-auto py-16 bg-slate-100 space-y-4">
+    <div className="mx-auto py-16 bg-slate-100 space-y-2">
       <div className="flex flex-col items-center justify-center text-center py-10">
         <h1 className="text-2xl font-bold pb-4">Lottery Result</h1>
         <p className="text-lg text-gray-600 font-semibold capitalize">{jackpot.title}</p>
         <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot.description}</p>
+        <p className="text-sm text-gray-500 w-full sm:w-2/3">
+          Result for{' '}
+          <span className="font-medium text-green-600">{result.winners.length} winners</span> out of{' '}
+          <span className="font-medium text-black">{jackpot.participants} participants</span>
+        </p>
       </div>
 
-      <div className="flex flex-col justify-center items-center space-y-4 mb-6">
+      <div className="flex flex-col justify-center items-center space-y-4">
         <Countdown timestamp={jackpot.expiresAt} />
 
         <div className="flex justify-center items-center space-x-2">
-          {/* <button
-            disabled={Date.now() < jackpot.expiresAt}
-            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+          {wallet.toLowerCase() == jackpot.owner ? (
+            <button
+              disabled={jackpot.expiresAt > Date.now()}
+              onClick={() => dispatch(setWinnerModal('scale-100'))}
+              className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
             hover:bg-rose-600 font-semibold
-            ${
-              Date.now() < jackpot.expiresAt ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-600'
-            }`}
-          >
-            Perform Draw
-          </button> */}
-          <button
-            onClick={() => dispatch(setWinnerModal('scale-100'))}
-            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-            hover:bg-rose-600 font-semibol`}
-          >
-            Perform Draw
-          </button>
+              ${
+                jackpot.expiresAt > Date.now()
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-rose-600'
+              }`}
+            >
+              Perform Draw
+            </button>
+          ) : null}
 
           <Link
             href={`/jackpots/` + jackpot.id}
@@ -70,9 +74,15 @@ const Result = ({ jackpot, participants }) => {
                   </p>
                   <div className="flex justify-start items-center space-x-2">
                     <p className="text-slate-500">{participant.lotteryNumber}</p>
-                    <p className="text-red-500 flex justify-start items-center">
-                      - <FaEthereum /> {jackpot.ticketPrice}
-                    </p>
+                    {result.winners.includes(participant.lotteryNumber) ? (
+                      <p className="text-green-500 flex justify-start items-center">
+                        + <FaEthereum /> {result.sharePerWinner}
+                      </p>
+                    ) : (
+                      <p className="text-red-500 flex justify-start items-center">
+                        - <FaEthereum /> {jackpot.ticketPrice}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

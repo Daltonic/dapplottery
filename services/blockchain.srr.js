@@ -27,6 +27,11 @@ const getLuckyNumbers = async (id) => {
   return luckyNumbers[0]
 }
 
+const getLotteryResult = async (id) => {
+  const lotterResult = await (await getEtheriumContract()).functions.getLotteryResult(id)
+  return structuredResult(lotterResult[0])
+}
+
 const getParticipants = async (id) => {
   const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
   return structuredParticipants(participants[0])
@@ -67,13 +72,14 @@ const structureLotteries = (lotteries) =>
     id: Number(lottery.id),
     title: lottery.title,
     description: lottery.description,
-    owner: lottery.owner,
+    owner: lottery.owner.toLowerCase(),
     prize: fromWei(lottery.prize),
     ticketPrice: fromWei(lottery.ticketPrice),
     image: lottery.image,
     createdAt: formatDate(Number(lottery.createdAt + '000')),
     drawsAt: formatDate(Number(lottery.expiresAt)),
     expiresAt: Number(lottery.expiresAt),
+    participants: Number(lottery.participants),
     drawn: lottery.drawn,
   }))
 
@@ -95,6 +101,24 @@ const structuredNumbers = (participants) => {
   return purchasedNumbers
 }
 
+const structuredResult = (result) => {
+  const LotteryResult = {
+    id: Number(result[0]),
+    completed: result[1],
+    paidout: result[2],
+    timestamp: Number(result[3] + '000'),
+    sharePerWinner: fromWei(result[4]),
+    winners: [],
+  }
+
+  for (let i = 0; i < result[5].length; i++) {
+    const winner = result[5][i][1]
+    LotteryResult.winners.push(winner)
+  }
+
+  return LotteryResult
+}
+
 module.exports = {
   getLotteries,
   getLottery,
@@ -102,4 +126,5 @@ module.exports = {
   getLuckyNumbers,
   getParticipants,
   getPurchasedNumbers,
+  getLotteryResult,
 }

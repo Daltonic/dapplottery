@@ -33,6 +33,7 @@ contract DappLottery is Ownable {
         bool completed;
         bool paidout;
         uint256 timestamp;
+        uint256 sharePerWinner;
         ParticipantStruct[] winners;
     }
 
@@ -88,6 +89,7 @@ contract DappLottery is Ownable {
     {
         require(lotteries[id].owner == msg.sender, "Unauthorized entity");
         require(lotteryLuckyNumbers[id].length < 1, "Already generated");
+        require(lotteries[id].participants < 1, "Tickets have been purchased");
         require(luckyNumbers.length > 0, "Lucky numbers cannot be zero");
         lotteryLuckyNumbers[id] = luckyNumbers;
     }
@@ -158,17 +160,11 @@ contract DappLottery is Ownable {
         lotteryResult[id].id = id;
         lotteryResult[id].completed = true;
         lotteryResult[id].timestamp = block.timestamp;
+
+        payLotteryWinners(id);
     }
 
-    function payLotteryWinners(uint256 id) public onlyOwner {
-        require(
-            lotteries[id].owner == msg.sender ||
-            lotteries[id].owner == owner(),
-            "Unauthorized entity"
-        );
-        require(lotteryResult[id].completed, "Lottery not completed yet");
-        require(!lotteryResult[id].paidout, "Lottery already paid out");
-
+    function payLotteryWinners(uint256 id) internal {
         ParticipantStruct[] memory winners = lotteryResult[id].winners;
         uint256 totalShares = lotteries[id].ticketPrice * lotteryParticipants[id].length;
         uint256 platformShare = (totalShares * servicePercent) / 100 ;
@@ -181,6 +177,7 @@ contract DappLottery is Ownable {
         payTo(owner(), platformShare);
         serviceBalance -= totalShares;
         lotteryResult[id].paidout = true;
+        lotteryResult[id].sharePerWinner = sharesPerWinner;
     }
 
     function getLotteries() public view returns (LotteryStruct[] memory Lotteries) {
