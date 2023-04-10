@@ -27,6 +27,11 @@ const getLuckyNumbers = async (id) => {
   return luckyNumbers[0]
 }
 
+const getParticipants = async (id) => {
+  const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
+  return participants[0]
+}
+
 function formatDate(timestamp) {
   const date = new Date(timestamp)
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -73,4 +78,5 @@ module.exports = {
   getLottery,
   structureLotteries,
   getLuckyNumbers,
+  getParticipants,
 }

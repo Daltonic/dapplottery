@@ -2,10 +2,10 @@ import abi from '@/artifacts/contracts/DappLottery.sol/DappLottery.json'
 import address from '@/artifacts/contractAddress.json'
 import { globalActions } from '@/store/global_reducer'
 import { store } from '@/store'
-import { getLuckyNumbers } from '@/services/blockchain.srr'
+import { getLuckyNumbers, getParticipants } from '@/services/blockchain.srr'
 import { ethers } from 'ethers'
 
-const { updateWallet, setLuckyNumbers } = globalActions
+const { updateWallet, setLuckyNumbers, setParticipants } = globalActions
 const contractAddress = address.address
 const contractAbi = abi.abi
 let tx, ethereum
@@ -81,6 +81,23 @@ const createJackpot = async ({ title, description, imageUrl, prize, ticketPrice,
   }
 }
 
+const buyTicket = async (id, luckyNumberId, ticketPrice) => {
+  try {
+    if (!ethereum) return notifyUser('Please install Metamask')
+    const connectedAccount = store.getState().globalState.wallet
+    const contract = await getEthereumContract()
+    tx = await contract.buyTicket(id, luckyNumberId, {
+      from: connectedAccount,
+      value: toWei(ticketPrice),
+    })
+    await tx.wait()
+    const lotteryParticipants = await getParticipants(id)
+    store.dispatch(setParticipants(lotteryParticipants))
+  } catch (error) {
+    reportError(error)
+  }
+}
+
 const exportLuckyNumbers = async (id, luckyNumbers) => {
   try {
     if (!ethereum) return notifyUser('Please install Metamask')
@@ -90,8 +107,8 @@ const exportLuckyNumbers = async (id, luckyNumbers) => {
       from: connectedAccount,
     })
     await tx.wait()
-    const numbers = await getLuckyNumbers(id)
-    store.dispatch(setLuckyNumbers(numbers))
+    const lotteryNumbers = await getLuckyNumbers(id)
+    store.dispatch(setLuckyNumbers(lotteryNumbers))
   } catch (error) {
     reportError(error)
   }
@@ -117,4 +134,4 @@ const truncate = (text, startChars, endChars, maxLength) => {
   return text
 }
 
-export { isWallectConnected, connectWallet, createJackpot, exportLuckyNumbers, truncate }
+export { isWallectConnected, connectWallet, createJackpot, exportLuckyNumbers, buyTicket, truncate }

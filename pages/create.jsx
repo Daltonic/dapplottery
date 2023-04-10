@@ -7,7 +7,7 @@ import SubHeader from '../components/SubHeader'
 import { createJackpot } from '@/services/blockchain'
 
 export default function Create() {
-  const { wallet } = useSelector((state) => state.walletState)
+  const { wallet } = useSelector((state) => state.globalState)
   const router = useRouter()
 
   const [title, setTitle] = useState('')

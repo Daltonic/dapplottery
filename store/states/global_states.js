@@ -3,4 +3,5 @@ export const global_states = {
   generatorModal: 'scale-0',
   jackpots: [],
   luckyNumbers: [],
+  participants: [],
 }

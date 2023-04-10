@@ -11,4 +11,7 @@ export const global_actions = {
   setLuckyNumbers: (state, action) => {
     state.luckyNumbers = action.payload
   },
+  setParticipants: (state, action) => {
+    state.participants = action.payload
+  },
 }

@@ -1,13 +1,33 @@
 import { useRouter } from 'next/router'
-import Countdown from '@/components/Countdown'
-import { globalActions } from '@/store/global_reducer'
 import { useDispatch } from 'react-redux'
 import { FaEthereum } from 'react-icons/fa'
+import Countdown from '@/components/Countdown'
+import { globalActions } from '@/store/global_reducer'
+import { buyTicket } from '@/services/blockchain'
+import { toast } from 'react-toastify'
 
-const DrawTime = ({ jackpot, luckyNumbers }) => {
+const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
   const { setGeneratorModal } = globalActions
   const dispatch = useDispatch()
-  const navigate = useRouter()
+  const router = useRouter()
+  const { jackpotId } = router.query
+
+  const handlePurchase = async (luckyNumberId) => {
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await buyTicket(jackpotId, luckyNumberId, jackpot.ticketPrice)
+          .then(async () => {
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Approve transaction...',
+        success: 'Ticket purchased successfully 👌',
+        error: 'Encountered error 🤯',
+      }
+    )
+  }
 
   return (
     <div className="py-10 px-5 bg-slate-100">
@@ -62,7 +82,7 @@ const DrawTime = ({ jackpot, luckyNumbers }) => {
                 <td className="border px-4 py-2 font-semibold text-center">{luckyNumber}</td>
                 <td className="border px-4 py-2 font-semibold text-center">
                   <button
-                    onClick={() => navigate.push('/results')}
+                    onClick={() => handlePurchase(i)}
                     className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
                   >
                     BUY NOW
