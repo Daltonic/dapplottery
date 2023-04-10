@@ -2,7 +2,7 @@ import abi from '@/artifacts/contracts/DappLottery.sol/DappLottery.json'
 import address from '@/artifacts/contractAddress.json'
 import { globalActions } from '@/store/global_reducer'
 import { store } from '@/store'
-import { getLuckyNumbers, getParticipants } from '@/services/blockchain.srr'
+import { getLuckyNumbers, getPurchasedNumbers } from '@/services/blockchain.srr'
 import { ethers } from 'ethers'
 
 const { updateWallet, setLuckyNumbers, setParticipants } = globalActions
@@ -91,7 +91,7 @@ const buyTicket = async (id, luckyNumberId, ticketPrice) => {
       value: toWei(ticketPrice),
     })
     await tx.wait()
-    const lotteryParticipants = await getParticipants(id)
+    const lotteryParticipants = await getPurchasedNumbers(id)
     store.dispatch(setParticipants(lotteryParticipants))
   } catch (error) {
     reportError(error)

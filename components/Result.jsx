@@ -1,8 +1,10 @@
+import Link from 'next/link'
+import { FaEthereum } from 'react-icons/fa'
 import Identicon from 'react-identicons'
 import Countdown from '@/components/Countdown'
-import Link from 'next/link'
+import { truncate } from '@/services/blockchain'
 
-const Result = ({ jackpot }) => {
+const Result = ({ jackpot, participants }) => {
   return (
     <div className="mx-auto py-16 bg-slate-100 space-y-4">
       <div className="flex flex-col items-center justify-center text-center py-10">
@@ -39,54 +41,31 @@ const Result = ({ jackpot }) => {
       <div className="flex flex-col-reverse sm:flex-row ">
         <div
           className="bg-white flex flex-col w-full sm:w-3/4 mx-auto
-        p-5 rounded-md space-y-2 max-h-80 overflow-y-auto"
+        p-5 rounded-md"
         >
-          <h4 className="text-2xl font-bold text-slate-700 text-center">Our Winners</h4>
+          <h4 className="text-2xl font-bold text-slate-700 text-center">Winners & Lossers</h4>
 
-          {Array(5)
-            .fill()
-            .map((winner, i) => (
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {participants.map((participant, i) => (
               <div
                 key={i}
                 className="flex justify-start items-center border-b border-gray-100 py-2 space-x-2"
               >
                 <Identicon size={30} string={i} className="rounded-full h-12 w-12" />
                 <div className="flex flex-col text-sm">
-                  <p className="font-semibold text-lg text-slate-500">Jemmy White</p>
+                  <p className="font-semibold text-lg text-slate-500">
+                    {truncate(participant.account, 4, 4, 11)}
+                  </p>
                   <div className="flex justify-start items-center space-x-2">
-                    <p className="text-green-500 font-bold">23 ETH</p>
-                    <p className="text-slate-500">15/01/2023</p>
+                    <p className="text-slate-500">{participant.lotteryNumber}</p>
+                    <p className="text-red-500 flex justify-start items-center">
+                      - <FaEthereum /> {jackpot.ticketPrice}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col-reverse sm:flex-row ">
-        <div
-          className="bg-white flex flex-col w-full sm:w-3/4 mx-auto
-        p-5 rounded-md space-y-2 max-h-80 overflow-y-auto"
-        >
-          <h4 className="text-2xl font-bold text-slate-700 text-center">All Participants</h4>
-
-          {Array(19)
-            .fill()
-            .map((winner, i) => (
-              <div
-                key={i}
-                className="flex justify-start items-center border-b border-gray-100 py-2 space-x-2"
-              >
-                <Identicon size={30} string={i} className="rounded-full h-12 w-12" />
-                <div className="flex flex-col text-sm">
-                  <p className="font-semibold text-lg text-slate-500">Jemmy White</p>
-                  <div className="flex justify-start items-center space-x-2">
-                    <p className="text-green-500 font-bold">23 ETH</p>
-                    <p className="text-slate-500">15/01/2023</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+          </div>
         </div>
       </div>
     </div>

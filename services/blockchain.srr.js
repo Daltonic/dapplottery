@@ -29,7 +29,11 @@ const getLuckyNumbers = async (id) => {
 
 const getParticipants = async (id) => {
   const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
-  return getParticipantsNumbers(participants[0])
+  return structuredParticipants(participants[0])
+}
+const getPurchasedNumbers = async (id) => {
+  const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
+  return structuredNumbers(participants[0])
 }
 
 function formatDate(timestamp) {
@@ -73,7 +77,14 @@ const structureLotteries = (lotteries) =>
     drawn: lottery.drawn,
   }))
 
-const getParticipantsNumbers = (participants) => {
+const structuredParticipants = (participants) =>
+  participants.map((participant) => ({
+    account: participant[0].toLowerCase(),
+    lotteryNumber: participant[1],
+    paid: participant[2],
+  }))
+
+const structuredNumbers = (participants) => {
   const purchasedNumbers = []
 
   for (let i = 0; i < participants.length; i++) {
@@ -90,4 +101,5 @@ module.exports = {
   structureLotteries,
   getLuckyNumbers,
   getParticipants,
+  getPurchasedNumbers,
 }

@@ -4,7 +4,7 @@ import DrawTime from '@/components/DrawTime'
 import SubHeader from '@/components/SubHeader'
 import Generator from '@/components/Generator'
 import { globalActions } from '@/store/global_reducer'
-import { getLottery, getLuckyNumbers, getParticipants } from '@/services/blockchain.srr'
+import { getLottery, getLuckyNumbers, getPurchasedNumbers } from '@/services/blockchain.srr'
 import { useEffect } from 'react'
 
 export default function Draws({ jackpot, lotteryNumbers, purchasedNumbers }) {
@@ -36,7 +36,7 @@ export default function Draws({ jackpot, lotteryNumbers, purchasedNumbers }) {
 export const getServerSideProps = async (context) => {
   const { jackpotId } = context.query
   const jackpot = await getLottery(jackpotId)
-  const purchasedNumbers = await getParticipants(jackpotId)
+  const purchasedNumbers = await getPurchasedNumbers(jackpotId)
   const lotteryNumbers = await getLuckyNumbers(jackpotId)
   return {
     props: {
