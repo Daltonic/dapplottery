@@ -9,7 +9,10 @@ export const global_actions = {
     state.winnerModal = action.payload
   },
   setJackpots: (state, action) => {
-    state.generatorModal = action.payload
+    state.jackpots = action.payload
+  },
+  setJackpot: (state, action) => {
+    state.jackpot = action.payload
   },
   setLuckyNumbers: (state, action) => {
     state.luckyNumbers = action.payload

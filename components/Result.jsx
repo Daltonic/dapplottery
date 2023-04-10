@@ -20,7 +20,8 @@ const Result = ({ jackpot, participants, result }) => {
         <p className="text-sm text-gray-500 w-full sm:w-2/3">
           Result for{' '}
           <span className="font-medium text-green-600">{result.winners.length} winners</span> out of{' '}
-          <span className="font-medium text-black">{jackpot.participants} participants</span>
+          <span className="font-medium text-black">{jackpot.participants} participants</span>{' '}
+          <span className="font-medium text-gray-600">{result.winners.length > 0 ? 'Drawn' : 'Not Drawn'}</span>
         </p>
       </div>
 

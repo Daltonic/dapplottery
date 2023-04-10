@@ -18,7 +18,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
     if (!wallet) return toast.warning('Connect your wallet')
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await buyTicket(jackpotId, luckyNumberId, jackpot.ticketPrice)
+        await buyTicket(jackpotId, luckyNumberId, jackpot?.ticketPrice)
           .then(async () => {
             resolve()
           })
@@ -31,9 +31,9 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       }
     )
   }
-  
+
   const onGenerate = () => {
-    if(luckyNumbers.length > 0) return toast.warning("Already generated")
+    if (luckyNumbers.length > 0) return toast.warning('Already generated')
     dispatch(setGeneratorModal('scale-100'))
   }
 
@@ -43,22 +43,25 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
         <h4 className="text-4xl text-slate-700 text-center font-bold pb-3">
           Buy Lottery Tickets Online
         </h4>
-        <p className="text-lg text-gray-600 font-semibold capitalize">{jackpot.title}</p>
-        <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot.description}</p>
+        <p className="text-lg text-gray-600 font-semibold capitalize">{jackpot?.title}</p>
+        <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot?.description}</p>
+        <p className="text-sm text-gray-500 w-full sm:w-2/3">
+          <span className="font-medium text-black">{jackpot?.participants} participants</span>
+        </p>
       </div>
 
       <div className="flex flex-col justify-center items-center space-y-4 mb-6">
-        <Countdown timestamp={jackpot.expiresAt} />
+        <Countdown timestamp={jackpot?.expiresAt} />
 
         <div className="flex justify-center items-center space-x-2">
-          {wallet.toLowerCase() == jackpot.owner ? (
+          {wallet.toLowerCase() == jackpot?.owner ? (
             <button
-              disabled={jackpot.expiresAt < Date.now()}
+              disabled={jackpot?.expiresAt < Date.now()}
               onClick={onGenerate}
               className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
                 hover:bg-rose-600 font-semibold
                 ${
-                  jackpot.expiresAt < Date.now()
+                  jackpot?.expiresAt < Date.now()
                     ? 'opacity-50 cursor-not-allowed'
                     : 'hover:bg-rose-600'
                 }
@@ -69,7 +72,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           ) : null}
 
           <Link
-            href={`/results/` + jackpot.id}
+            href={`/results/` + jackpot?.id}
             className="flex flex-nowrap border py-2 px-4 rounded-full bg-[#0c2856]
             hover:bg-[#1a396c] cursor-pointer font-semibold text-white"
           >
@@ -100,10 +103,10 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
                 <td className="px-4 py-2 font-semibold">
                   <div className="flex justify-center items-center space-x-1">
                     <FaEthereum />
-                    <span>{jackpot.ticketPrice}</span>
+                    <span>{jackpot?.ticketPrice}</span>
                   </div>
                 </td>
-                <td className="px-4 py-2 font-semibold">{jackpot.drawsAt}</td>
+                <td className="px-4 py-2 font-semibold">{jackpot?.drawsAt}</td>
                 <td className="px-4 py-2 font-semibold">{luckyNumber}</td>
                 <td className="px-4 py-2 font-semibold">
                   <button

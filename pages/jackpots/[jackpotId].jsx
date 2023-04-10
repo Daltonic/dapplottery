@@ -7,12 +7,13 @@ import { globalActions } from '@/store/global_reducer'
 import { getLottery, getLuckyNumbers, getPurchasedNumbers } from '@/services/blockchain.srr'
 import { useEffect } from 'react'
 
-export default function Draws({ jackpot, lotteryNumbers, numbersPurchased }) {
-  const { luckyNumbers, purchasedNumbers } = useSelector((state) => state.globalState)
-  const { setLuckyNumbers, setPurchasedNumbers } = globalActions
+export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
+  const { luckyNumbers, purchasedNumbers, jackpot } = useSelector((state) => state.globalState)
+  const { setLuckyNumbers, setPurchasedNumbers, setJackpot } = globalActions
   const dispatch = useDispatch()
 
   useEffect(() => {
+    dispatch(setJackpot(lottery))
     dispatch(setLuckyNumbers(lotteryNumbers))
     dispatch(setPurchasedNumbers(numbersPurchased))
   }, [])
@@ -26,11 +27,7 @@ export default function Draws({ jackpot, lotteryNumbers, numbersPurchased }) {
 
       <div>
         <SubHeader />
-        <DrawTime
-          jackpot={jackpot}
-          luckyNumbers={luckyNumbers}
-          participants={purchasedNumbers}
-        />
+        <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} participants={purchasedNumbers} />
         <Generator />
       </div>
     </div>
@@ -39,12 +36,13 @@ export default function Draws({ jackpot, lotteryNumbers, numbersPurchased }) {
 
 export const getServerSideProps = async (context) => {
   const { jackpotId } = context.query
-  const jackpot = await getLottery(jackpotId)
+  const lottery = await getLottery(jackpotId)
   const purchasedNumbers = await getPurchasedNumbers(jackpotId)
   const lotteryNumbers = await getLuckyNumbers(jackpotId)
+
   return {
     props: {
-      jackpot: JSON.parse(JSON.stringify(jackpot)),
+      lottery: JSON.parse(JSON.stringify(lottery)),
       lotteryNumbers: JSON.parse(JSON.stringify(lotteryNumbers)),
       numbersPurchased: JSON.parse(JSON.stringify(purchasedNumbers)),
     },

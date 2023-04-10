@@ -139,7 +139,7 @@ export default function Create() {
                 text-gray-700 leading-tight focus:outline-none
                 focus:shadow-outline"
                 id="expiresAt"
-                type="date"
+                type="datetime-local"
                 value={expiresAt}
                 onChange={(e) => setExpiresAt(e.target.value)}
                 required
