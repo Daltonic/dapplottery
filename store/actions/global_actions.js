@@ -23,4 +23,7 @@ export const global_actions = {
   setParticipants: (state, action) => {
     state.participants = action.payload
   },
+  setResult: (state, action) => {
+    state.result = action.payload
+  },
 }

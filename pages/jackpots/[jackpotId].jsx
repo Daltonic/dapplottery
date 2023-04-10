@@ -25,7 +25,7 @@ export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
+      <div className='min-h-screen bg-slate-100'>
         <SubHeader />
         <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} participants={purchasedNumbers} />
         <Generator />

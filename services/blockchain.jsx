@@ -4,14 +4,21 @@ import { globalActions } from '@/store/global_reducer'
 import { store } from '@/store'
 import {
   getLottery,
+  getLotteryResult,
   getLuckyNumbers,
   getParticipants,
   getPurchasedNumbers,
 } from '@/services/blockchain.srr'
 import { ethers } from 'ethers'
 
-const { updateWallet, setLuckyNumbers, setParticipants, setPurchasedNumbers, setJackpot } =
-  globalActions
+const {
+  updateWallet,
+  setLuckyNumbers,
+  setParticipants,
+  setPurchasedNumbers,
+  setJackpot,
+  setResult,
+} = globalActions
 const contractAddress = address.address
 const contractAbi = abi.abi
 let tx, ethereum
@@ -119,7 +126,12 @@ const performDraw = async (id, numOfWinners) => {
     })
     await tx.wait()
     const lotteryParticipants = await getParticipants(id)
+    const lottery = await getLottery(id)
+    const result = await getLotteryResult(id)
+
     store.dispatch(setParticipants(lotteryParticipants))
+    store.dispatch(setJackpot(lottery))
+    store.dispatch(setResult(result))
   } catch (error) {
     reportError(error)
   }

@@ -4,6 +4,7 @@ export const global_states = {
   winnerModal: 'scale-0',
   jackpots: [],
   jackpot: null,
+  result: null,
   luckyNumbers: [],
   participants: [],
   purchasedNumbers: [],

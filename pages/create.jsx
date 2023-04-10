@@ -65,7 +65,7 @@ export default function Create() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-slate-100">
         <SubHeader />
         <div className="flex flex-col justify-center items-center mt-20">
           <div className=" flex flex-col items-center justify-center my-5">

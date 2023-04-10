@@ -45,8 +45,8 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
         </h4>
         <p className="text-lg text-gray-600 font-semibold capitalize">{jackpot?.title}</p>
         <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot?.description}</p>
-        <p className="text-sm text-gray-500 w-full sm:w-2/3">
-          <span className="font-medium text-black">{jackpot?.participants} participants</span>
+        <p className="text-sm font-medium text-black w-full sm:w-2/3">
+          {jackpot?.participants} participants
         </p>
       </div>
 
@@ -90,9 +90,9 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           <thead className="max-h-80 overflow-y-auto block">
             <tr className="flex justify-between text-left">
               <th className="px-4 py-2 ">#</th>
-              <th className="px-4 py-2 ">Price</th>
-              <th className="px-4 py-2 ">Date to Draw</th>
-              <th className="px-4 py-2 ">Number</th>
+              <th className="px-4 py-2 ">Ticket Price</th>
+              <th className="px-4 py-2 ">Draw Date</th>
+              <th className="px-4 py-2 ">Ticket Number</th>
               <th className="px-4 py-2 ">Action</th>
             </tr>
           </thead>

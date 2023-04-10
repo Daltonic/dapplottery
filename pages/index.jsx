@@ -11,7 +11,7 @@ export default function Home({ jackpots }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-slate-100">
         <Header />
         <Jackpots jackpots={jackpots} />
       </div>
