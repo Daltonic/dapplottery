@@ -29,7 +29,7 @@ const getLuckyNumbers = async (id) => {
 
 const getParticipants = async (id) => {
   const participants = await (await getEtheriumContract()).functions.getLotteryParticipants(id)
-  return participants[0]
+  return getParticipantsNumbers(participants[0])
 }
 
 function formatDate(timestamp) {
@@ -72,6 +72,17 @@ const structureLotteries = (lotteries) =>
     expiresAt: Number(lottery.expiresAt),
     drawn: lottery.drawn,
   }))
+
+const getParticipantsNumbers = (participants) => {
+  const purchasedNumbers = []
+
+  for (let i = 0; i < participants.length; i++) {
+    const purchasedNumber = participants[i][1]
+    purchasedNumbers.push(purchasedNumber)
+  }
+
+  return purchasedNumbers
+}
 
 module.exports = {
   getLotteries,

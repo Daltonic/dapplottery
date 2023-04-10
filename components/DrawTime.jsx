@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FaEthereum } from 'react-icons/fa'
 import Countdown from '@/components/Countdown'
 import { globalActions } from '@/store/global_reducer'
@@ -8,11 +8,13 @@ import { toast } from 'react-toastify'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
   const { setGeneratorModal } = globalActions
+  const { wallet } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
   const router = useRouter()
   const { jackpotId } = router.query
 
   const handlePurchase = async (luckyNumberId) => {
+    if (!wallet) return toast.warning('Connect your wallet')
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await buyTicket(jackpotId, luckyNumberId, jackpot.ticketPrice)
@@ -42,7 +44,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       <div className="flex flex-col justify-center items-center space-y-4 mb-6">
         <Countdown timestamp={jackpot.expiresAt} />
 
-        {luckyNumbers.length < 1 ? (
+        {wallet && luckyNumbers.length < 1 ? (
           <button
             onClick={() => dispatch(setGeneratorModal('scale-100'))}
             className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
@@ -59,8 +61,8 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
         </div>
 
         <table className="table-auto">
-          <thead>
-            <tr>
+          <thead className="max-h-80 overflow-y-auto block">
+            <tr className="flex justify-between text-left">
               <th className="px-4 py-2 ">#</th>
               <th className="px-4 py-2 ">Price</th>
               <th className="px-4 py-2 ">Date to Draw</th>
@@ -68,22 +70,27 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
               <th className="px-4 py-2 ">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="max-h-80 overflow-y-auto block">
             {luckyNumbers.map((luckyNumber, i) => (
-              <tr key={i}>
-                <td className="border px-4 py-2 font-semibold text-center">{i + 1}</td>
-                <td className="border px-4 py-2 font-semibold text-center">
+              <tr className="flex justify-between border-b text-left" key={i}>
+                <td className="px-4 py-2 font-semibold">{i + 1}</td>
+                <td className="px-4 py-2 font-semibold">
                   <div className="flex justify-center items-center space-x-1">
                     <FaEthereum />
                     <span>{jackpot.ticketPrice}</span>
                   </div>
                 </td>
-                <td className="border px-4 py-2 font-semibold text-center">{jackpot.drawsAt}</td>
-                <td className="border px-4 py-2 font-semibold text-center">{luckyNumber}</td>
-                <td className="border px-4 py-2 font-semibold text-center">
+                <td className="px-4 py-2 font-semibold">{jackpot.drawsAt}</td>
+                <td className="px-4 py-2 font-semibold">{luckyNumber}</td>
+                <td className="px-4 py-2 font-semibold">
                   <button
+                    disabled={participants.includes(luckyNumber)}
                     onClick={() => handlePurchase(i)}
-                    className="bg-black hover:bg-rose-600 text-white text-sm py-2 px-4 rounded-full"
+                    className={`bg-black ${
+                      participants.includes(luckyNumber)
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:bg-rose-600'
+                    } text-white text-sm py-2 px-4 rounded-full`}
                   >
                     BUY NOW
                   </button>
