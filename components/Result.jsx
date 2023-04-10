@@ -1,10 +1,15 @@
 import Link from 'next/link'
-import { FaEthereum } from 'react-icons/fa'
 import Identicon from 'react-identicons'
+import { useDispatch } from 'react-redux'
+import { FaEthereum } from 'react-icons/fa'
 import Countdown from '@/components/Countdown'
 import { truncate } from '@/services/blockchain'
+import { globalActions } from '@/store/global_reducer'
 
 const Result = ({ jackpot, participants }) => {
+  const { setWinnerModal } = globalActions
+  const dispatch = useDispatch()
+
   return (
     <div className="mx-auto py-16 bg-slate-100 space-y-4">
       <div className="flex flex-col items-center justify-center text-center py-10">
@@ -17,13 +22,20 @@ const Result = ({ jackpot, participants }) => {
         <Countdown timestamp={jackpot.expiresAt} />
 
         <div className="flex justify-center items-center space-x-2">
-          <button
+          {/* <button
             disabled={Date.now() < jackpot.expiresAt}
             className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
             hover:bg-rose-600 font-semibold
             ${
               Date.now() < jackpot.expiresAt ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-600'
             }`}
+          >
+            Perform Draw
+          </button> */}
+          <button
+            onClick={() => dispatch(setWinnerModal('scale-100'))}
+            className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 font-semibol`}
           >
             Perform Draw
           </button>

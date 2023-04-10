@@ -1,6 +1,7 @@
 import Head from 'next/head'
-import Result from '../../components/Result'
-import SubHeader from '../../components/SubHeader'
+import Winners from '@/components/Winners'
+import Result from '@/components/Result'
+import SubHeader from '@/components/SubHeader'
 import { getLottery, getParticipants } from '@/services/blockchain.srr'
 
 export default function Results({ jackpot, participants }) {
@@ -14,6 +15,7 @@ export default function Results({ jackpot, participants }) {
       <div className="min-h-screen">
         <SubHeader />
         <Result jackpot={jackpot} participants={participants} />
+        <Winners />
       </div>
     </div>
   )
