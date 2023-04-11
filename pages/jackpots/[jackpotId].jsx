@@ -1,13 +1,17 @@
 import Head from 'next/head'
-import { useSelector, useDispatch } from 'react-redux'
+import { useEffect } from 'react'
 import DrawTime from '@/components/DrawTime'
 import SubHeader from '@/components/SubHeader'
 import Generator from '@/components/Generator'
+import { initCometChat } from '@/services/chat'
+import { useSelector, useDispatch } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
 import { getLottery, getLuckyNumbers, getPurchasedNumbers } from '@/services/blockchain.srr'
-import { useEffect } from 'react'
 
 export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
+  window.CometChat = require('@cometchat-pro/chat').CometChat
+  initCometChat(window.CometChat)
+
   const { luckyNumbers, purchasedNumbers, jackpot } = useSelector((state) => state.globalState)
   const { setLuckyNumbers, setPurchasedNumbers, setJackpot } = globalActions
   const dispatch = useDispatch()
@@ -25,7 +29,7 @@ export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className='min-h-screen bg-slate-100'>
+      <div className="min-h-screen bg-slate-100">
         <SubHeader />
         <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} participants={purchasedNumbers} />
         <Generator />

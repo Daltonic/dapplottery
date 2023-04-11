@@ -51,7 +51,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       </div>
 
       <div className="flex flex-col justify-center items-center space-y-4 mb-6">
-        <Countdown timestamp={jackpot?.expiresAt} />
+        {jackpot?.expiresAt ? <Countdown timestamp={jackpot?.expiresAt} /> : null}
 
         <div className="flex justify-center items-center space-x-2">
           {wallet.toLowerCase() == jackpot?.owner ? (

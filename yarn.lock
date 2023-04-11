@@ -70,6 +70,11 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+"@cometchat-pro/chat@3.0.11":
+  version "3.0.11"
+  resolved "https://registry.yarnpkg.com/@cometchat-pro/chat/-/chat-3.0.11.tgz#2bdddd7a8274e0a5e797f6160f4be1dc622a28a5"
+  integrity sha512-C2HITalAOlSHTKv+WkawcnFW5PLh6UR0NkEWOEorzLBoFvNVj/MwemtI+rKHuNIWAfTauqjXNnYbUUzrltmoxw==
+
 "@emotion/babel-plugin@^11.10.5":
   version "11.10.5"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.10.5.tgz#65fa6e1790ddc9e23cc22658a4c5dea423c55c3c"

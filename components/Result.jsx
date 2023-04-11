@@ -19,8 +19,8 @@ const Result = ({ jackpot, participants, result }) => {
         <p className="text-sm text-gray-500 w-full sm:w-2/3">{jackpot?.description}</p>
         <p className="text-sm text-gray-500 w-full sm:w-2/3">
           Result for{' '}
-          <span className="font-medium text-green-600">{result?.winners.length} winners</span> out of{' '}
-          <span className="font-medium text-black">{jackpot?.participants} participants</span>{' '}
+          <span className="font-medium text-green-600">{result?.winners.length} winners</span> out
+          of <span className="font-medium text-black">{jackpot?.participants} participants</span>{' '}
           <span className="font-medium text-gray-600">
             {result?.winners.length > 0 ? 'Drawn' : 'Not Drawn'}
           </span>
@@ -28,7 +28,7 @@ const Result = ({ jackpot, participants, result }) => {
       </div>
 
       <div className="flex flex-col justify-center items-center space-y-4">
-        <Countdown timestamp={jackpot?.expiresAt} />
+        {jackpot?.expiresAt ? <Countdown timestamp={jackpot?.expiresAt} /> : null}
 
         <div className="flex justify-center items-center space-x-2">
           {wallet.toLowerCase() == jackpot?.owner ? (
