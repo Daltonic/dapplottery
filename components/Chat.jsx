@@ -1,7 +1,8 @@
 import { FaTimes } from 'react-icons/fa'
+import Identicon from 'react-identicons'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
-import { sendMessage } from '@/services/chat'
+import { sendMessage, getMessages } from '@/services/chat'
 import { useEffect, useState } from 'react'
 
 const Chat = ({ id }) => {
@@ -13,6 +14,9 @@ const Chat = ({ id }) => {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
+    setTimeout(async () => {
+      getMessages(CometChat, `guid_${id}`).then((msgs) => setMessages(msgs))
+    }, 500)
     scrollToEnd()
   }, [])
 
@@ -24,7 +28,6 @@ const Chat = ({ id }) => {
       await sendMessage(CometChat, `guid_${id}`, message)
         .then((msg) => {
           setMessages((prevMsgs) => [...prevMsgs, msg])
-          console.log(msg)
           setMessage('')
           scrollToEnd()
           resolve(msg)
@@ -53,19 +56,15 @@ const Chat = ({ id }) => {
           id="messages-container"
           className="flex flex-col overflow-y-scroll overflow-x-hidden h-[22rem]"
         >
-          <div className="flex flex-col items-start mt-4">
-            <div className="bg-gray-200 py-2 px-4 rounded-lg max-w-xs">
-              <p className="text-black ">Hey there! How can I help you today?</p>
-            </div>
-            <span className="text-gray-500 text-sm mt-2">10:30 AM</span>
-          </div>
-
-          <div className="flex flex-col items-end mt-4">
-            <div className="bg-amber-500 py-2 px-4 rounded-lg max-w-xs">
-              <p className="text-white">Hi, I have a question about your services.</p>
-            </div>
-            <span className="text-gray-500 text-sm mt-2">10:32 AM</span>
-          </div>
+          {messages.map((msg, i) => (
+            <Message
+              key={i}
+              msg={msg.text}
+              time={Number(msg.sentAt + '000')}
+              uid={msg.sender.uid}
+              isCurrentUser={msg.sender.uid != wallet.toLowerCase()}
+            />
+          ))}
         </div>
 
         <form onSubmit={onSendMessage} className="h-18 w-full mt-3">
@@ -84,3 +83,27 @@ const Chat = ({ id }) => {
 }
 
 export default Chat
+
+const Message = ({ msg, isCurrentUser, time, uid }) => {
+  return isCurrentUser ? (
+    <div className="flex flex-col items-start mt-4">
+      <div className="flex justify-start items-start space-x-2">
+        <Identicon string={uid} size={30} className="rounded-full shadow-md" />
+        <div className="bg-gray-200 py-2 px-4 rounded-lg max-w-xs">
+          <p className="text-black ">{msg}</p>
+        </div>
+      </div>
+      <span className="text-gray-500 text-sm mt-2">{new Date(time).toLocaleString()}</span>
+    </div>
+  ) : (
+    <div className="flex flex-col items-end mt-4">
+      <div className="flex justify-start items-start space-x-2">
+        <Identicon string={uid} size={30} className="rounded-full shadow-md" />
+        <div className="bg-amber-500 py-2 px-4 rounded-lg max-w-xs">
+          <p className="text-white">{msg}</p>
+        </div>
+      </div>
+      <span className="text-gray-500 text-sm mt-2">{new Date(time).toLocaleString()}</span>
+    </div>
+  )
+}
