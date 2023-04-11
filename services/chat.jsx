@@ -48,25 +48,25 @@ const logOutWithCometChat = async (CometChat) => {
   })
 }
 
-// const checkAuthState = async () => {
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.getLoggedinUser()
-//       .then((user) => resolve(user))
-//       .catch((error) => reject(error))
-//   })
-// }
+const checkAuthState = async (CometChat) => {
+  return new Promise(async (resolve, reject) => {
+    await CometChat.getLoggedinUser()
+      .then((user) => resolve(user))
+      .catch((error) => reject(error))
+  })
+}
 
-// const createNewGroup = async (GUID, groupName) => {
-//   const groupType = CometChat.GROUP_TYPE.PUBLIC
-//   const password = ''
-//   const group = new CometChat.Group(GUID, groupName, groupType, password)
+const createNewGroup = async (CometChat, GUID, groupName) => {
+  const groupType = CometChat.GROUP_TYPE.PUBLIC
+  const password = ''
+  const group = new CometChat.Group(GUID, groupName, groupType, password)
 
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.createGroup(group)
-//       .then((group) => resolve(group))
-//       .catch((error) => reject(error))
-//   })
-// }
+  return new Promise(async (resolve, reject) => {
+    await CometChat.createGroup(group)
+      .then((group) => resolve(group))
+      .catch((error) => reject(error))
+  })
+}
 
 // const getGroup = async (GUID) => {
 //   return new Promise(async (resolve, reject) => {
@@ -128,10 +128,10 @@ export {
   loginWithCometChat,
   signUpWithCometChat,
   logOutWithCometChat,
+  checkAuthState,
+  createNewGroup,
   //   getMessages,
   //   sendMessage,
-  //   checkAuthState,
-  //   createNewGroup,
   //   getGroup,
   //   joinGroup,
   //   listenForMessage,

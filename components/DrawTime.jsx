@@ -6,13 +6,15 @@ import Countdown from '@/components/Countdown'
 import { buyTicket } from '@/services/blockchain'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
+import { createNewGroup } from '@/services/chat'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
-  const { setGeneratorModal, setAuthModal } = globalActions
-  const { wallet } = useSelector((state) => state.globalState)
+  const { setGeneratorModal, setAuthModal, setGroup } = globalActions
+  const { wallet, currentUser } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
   const router = useRouter()
   const { jackpotId } = router.query
+  const { CometChat } = window
 
   const handlePurchase = async (luckyNumberId) => {
     if (!wallet) return toast.warning('Connect your wallet')
@@ -27,6 +29,25 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       {
         pending: 'Approve transaction...',
         success: 'Ticket purchased successfully 👌',
+        error: 'Encountered error 🤯',
+      }
+    )
+  }
+
+  const handleGroupCreation = async () => {
+    if (!currentUser) return toast.warning('Please authenticate chat')
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await createNewGroup(CometChat, `guid_${jackpot?.id}`, jackpot?.title)
+          .then((group) => {
+            dispatch(setGroup(JSON.parse(JSON.stringify(group))))
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Creating group...',
+        success: 'Group created successfully 👌',
         error: 'Encountered error 🤯',
       }
     )
@@ -55,10 +76,11 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
 
         <div className="flex justify-center items-center space-x-2">
           {wallet.toLowerCase() == jackpot?.owner ? (
-            <button
-              disabled={jackpot?.expiresAt < Date.now()}
-              onClick={onGenerate}
-              className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            <>
+              <button
+                disabled={jackpot?.expiresAt < Date.now()}
+                onClick={onGenerate}
+                className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
                 hover:bg-rose-600 font-semibold
                 ${
                   jackpot?.expiresAt < Date.now()
@@ -66,9 +88,18 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
                     : 'hover:bg-rose-600'
                 }
                 `}
-            >
-              Generate Lucky Numbers
-            </button>
+              >
+                Generate Lucky Numbers
+              </button>
+
+              <button
+                onClick={handleGroupCreation}
+                className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
+                hover:bg-rose-600 font-semibold text-white"
+              >
+                Create Group
+              </button>
+            </>
           ) : null}
 
           <Link

@@ -8,6 +8,9 @@ export const global_actions = {
   setWinnerModal: (state, action) => {
     state.winnerModal = action.payload
   },
+  setChatModal: (state, action) => {
+    state.chatModal = action.payload
+  },
   setAuthModal: (state, action) => {
     state.authModal = action.payload
   },
@@ -31,5 +34,8 @@ export const global_actions = {
   },
   setResult: (state, action) => {
     state.result = action.payload
+  },
+  setGroup: (state, action) => {
+    state.group = action.payload
   },
 }
