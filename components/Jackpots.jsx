@@ -14,7 +14,7 @@ const Jackpots = ({ jackpots }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-4 lg:gap-3 py-10 w-4/5 mx-auto">
-        {jackpots.map((jackpot, i) => (
+        {jackpots?.map((jackpot, i) => (
           <Jackpot jackpot={jackpot} key={i} />
         ))}
       </div>
@@ -35,7 +35,7 @@ const Jackpot = ({ jackpot }) => {
         />
         <div>
           <p className="text-green-300">Upto: {jackpot.prize} ETH</p>
-          <p className="text-sm text-gray-500">Draw On: {jackpot.drawsAt}</p>
+          <p className="text-sm text-gray-500">Draws On: {jackpot.drawsAt}</p>
         </div>
       </div>
       <div className="py-5">

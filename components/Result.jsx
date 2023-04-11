@@ -65,7 +65,7 @@ const Result = ({ jackpot, participants, result }) => {
           <h4 className="text-2xl font-bold text-slate-700 text-center">Winners & Lossers</h4>
 
           <div className="space-y-2 max-h-80 overflow-y-auto">
-            {participants.map((participant, i) => (
+            {participants?.map((participant, i) => (
               <div
                 key={i}
                 className="flex justify-start items-center border-b border-gray-100 py-2 space-x-2"

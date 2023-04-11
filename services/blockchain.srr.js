@@ -7,8 +7,15 @@ const contractAbi = abi.abi
 const fromWei = (num) => ethers.utils.formatEther(num)
 
 const getEtheriumContract = async () => {
-  const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
-  const signer = provider.getSigner()
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NODE_ENV !== 'production'
+      ?  process.env.NEXT_PUBLIC_LOCALHOST_URL
+      : process.env.NEXT_PUBLIC_MUMBAI_URL
+  )
+  const wallet = ethers.Wallet.createRandom()
+
+  // Set the new account as the signer for the provider
+  const signer = provider.getSigner(wallet.address)
   const contract = new ethers.Contract(contractAddress, contractAbi, signer)
   return contract
 }

@@ -176,7 +176,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
             </tr>
           </thead>
           <tbody className="max-h-80 overflow-y-auto block">
-            {luckyNumbers.map((luckyNumber, i) => (
+            {luckyNumbers?.map((luckyNumber, i) => (
               <tr className="flex justify-between border-b text-left" key={i}>
                 <td className="px-4 py-2 font-semibold">{i + 1}</td>
                 <td className="px-4 py-2 font-semibold">

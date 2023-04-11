@@ -60,7 +60,7 @@ const Chat = ({ id }) => {
         </div>
 
         <div className="flex flex-col overflow-y-scroll overflow-x-hidden h-[22rem] pb-5">
-          {messages.map((msg, i) => (
+          {messages?.map((msg, i) => (
             <Message
               key={i}
               msg={msg.text}
