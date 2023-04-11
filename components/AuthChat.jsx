@@ -38,6 +38,7 @@ const AuthChat = () => {
             dispatch(setCurrentUser(JSON.parse(JSON.stringify(user))))
             dispatch(setAuthModal('scale-0'))
             resolve()
+            window.location.reload()
           })
           .catch(() => reject())
       }),

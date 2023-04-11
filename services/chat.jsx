@@ -112,16 +112,16 @@ const sendMessage = async (CometChat, receiverID, messageText) => {
   })
 }
 
-// const listenForMessage = async (listenerID) => {
-//   return new Promise(async (resolve, reject) => {
-//     CometChat.addMessageListener(
-//       listenerID,
-//       new CometChat.MessageListener({
-//         onTextMessageReceived: (message) => resolve(message),
-//       })
-//     )
-//   })
-// }
+const listenForMessage = async (CometChat, listenerID) => {
+  return new Promise(async (resolve, reject) => {
+    CometChat.addMessageListener(
+      listenerID,
+      new CometChat.MessageListener({
+        onTextMessageReceived: (message) => resolve(message),
+      })
+    )
+  })
+}
 
 export {
   initCometChat,
@@ -134,5 +134,5 @@ export {
   getMessages,
   joinGroup,
   sendMessage,
-  //   listenForMessage,
+  listenForMessage,
 }

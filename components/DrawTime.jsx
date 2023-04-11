@@ -61,6 +61,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           .then((group) => {
             dispatch(setGroup(JSON.parse(JSON.stringify(group))))
             resolve()
+            window.location.reload()
           })
           .catch(() => reject())
       }),
@@ -94,7 +95,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
         {jackpot?.expiresAt ? <Countdown timestamp={jackpot?.expiresAt} /> : null}
 
         <div className="flex justify-center items-center space-x-2">
-          {wallet.toLowerCase() == jackpot?.owner ? (
+          {wallet?.toLowerCase() == jackpot?.owner ? (
             <>
               <button
                 disabled={jackpot?.expiresAt < Date.now()}

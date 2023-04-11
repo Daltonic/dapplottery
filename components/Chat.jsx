@@ -1,9 +1,9 @@
 import { FaTimes } from 'react-icons/fa'
 import Identicon from 'react-identicons'
+import { useLayoutEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
-import { sendMessage, getMessages } from '@/services/chat'
-import { useEffect, useState } from 'react'
+import { sendMessage, getMessages, listenForMessage } from '@/services/chat'
 
 const Chat = ({ id }) => {
   const { chatModal, wallet } = useSelector((state) => state.globalState)
@@ -12,12 +12,20 @@ const Chat = ({ id }) => {
   const { CometChat } = window
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState([])
+  const messagesEndRef = useRef(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setTimeout(async () => {
-      getMessages(CometChat, `guid_${id}`).then((msgs) => setMessages(msgs))
+      getMessages(CometChat, `guid_${id}`).then((msgs) => {
+        setMessages(msgs)
+        scrollToEnd()
+      })
+
+      listenForMessage(CometChat, `guid_${id}`).then((msg) => {
+        setMessages((prevMessages) => [...prevMessages, msg])
+        scrollToEnd()
+      })
     }, 500)
-    scrollToEnd()
   }, [])
 
   const onSendMessage = async (e) => {
@@ -29,16 +37,15 @@ const Chat = ({ id }) => {
         .then((msg) => {
           setMessages((prevMsgs) => [...prevMsgs, msg])
           setMessage('')
-          scrollToEnd()
           resolve(msg)
+          scrollToEnd()
         })
         .catch(() => reject())
     })
   }
 
   const scrollToEnd = () => {
-    const elmnt = document.getElementById('messages-container')
-    elmnt.scrollTop = elmnt.scrollHeight
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -52,10 +59,7 @@ const Chat = ({ id }) => {
           <FaTimes className="cursor-pointer" onClick={() => dispatch(setChatModal('scale-0'))} />
         </div>
 
-        <div
-          id="messages-container"
-          className="flex flex-col overflow-y-scroll overflow-x-hidden h-[22rem]"
-        >
+        <div className="flex flex-col overflow-y-scroll overflow-x-hidden h-[22rem] pb-5">
           {messages.map((msg, i) => (
             <Message
               key={i}
@@ -65,6 +69,7 @@ const Chat = ({ id }) => {
               isCurrentUser={msg.sender.uid != wallet.toLowerCase()}
             />
           ))}
+          <div className="bg-transparent py-10" ref={messagesEndRef} />
         </div>
 
         <form onSubmit={onSendMessage} className="h-18 w-full mt-3">
