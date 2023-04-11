@@ -102,15 +102,15 @@ const getMessages = async (CometChat, GUID) => {
   })
 }
 
-// const sendMessage = async (receiverID, messageText) => {
-//   const receiverType = CometChat.RECEIVER_TYPE.GROUP
-//   const textMessage = new CometChat.TextMessage(receiverID, messageText, receiverType)
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.sendMessage(textMessage)
-//       .then((message) => resolve(message))
-//       .catch((error) => reject(error))
-//   })
-// }
+const sendMessage = async (CometChat, receiverID, messageText) => {
+  const receiverType = CometChat.RECEIVER_TYPE.GROUP
+  const textMessage = new CometChat.TextMessage(receiverID, messageText, receiverType)
+  return new Promise(async (resolve, reject) => {
+    await CometChat.sendMessage(textMessage)
+      .then((message) => resolve(message))
+      .catch((error) => reject(error))
+  })
+}
 
 // const listenForMessage = async (listenerID) => {
 //   return new Promise(async (resolve, reject) => {
@@ -133,6 +133,6 @@ export {
   getGroup,
   getMessages,
   joinGroup,
-  //   sendMessage,
+  sendMessage,
   //   listenForMessage,
 }

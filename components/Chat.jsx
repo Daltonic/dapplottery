@@ -1,18 +1,37 @@
 import { FaTimes } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
-import { signUpWithCometChat, loginWithCometChat } from '@/services/chat'
-import { useEffect } from 'react'
+import { sendMessage } from '@/services/chat'
+import { useEffect, useState } from 'react'
 
-const Chat = () => {
+const Chat = ({ id }) => {
   const { chatModal, wallet } = useSelector((state) => state.globalState)
-  const { setChatModal, setCurrentUser } = globalActions
+  const { setChatModal } = globalActions
   const dispatch = useDispatch()
   const { CometChat } = window
+  const [message, setMessage] = useState('')
+  const [messages, setMessages] = useState([])
 
   useEffect(() => {
     scrollToEnd()
   }, [])
+
+  const onSendMessage = async (e) => {
+    e.preventDefault()
+    if (!message) return
+
+    new Promise(async (resolve, reject) => {
+      await sendMessage(CometChat, `guid_${id}`, message)
+        .then((msg) => {
+          setMessages((prevMsgs) => [...prevMsgs, msg])
+          console.log(msg)
+          setMessage('')
+          scrollToEnd()
+          resolve(msg)
+        })
+        .catch(() => reject())
+    })
+  }
 
   const scrollToEnd = () => {
     const elmnt = document.getElementById('messages-container')
@@ -43,15 +62,17 @@ const Chat = () => {
 
           <div className="flex flex-col items-end mt-4">
             <div className="bg-amber-500 py-2 px-4 rounded-lg max-w-xs">
-              <p className='text-white'>Hi, I have a question about your services.</p>
+              <p className="text-white">Hi, I have a question about your services.</p>
             </div>
             <span className="text-gray-500 text-sm mt-2">10:32 AM</span>
           </div>
         </div>
 
-        <form className="h-18 w-full mt-3">
+        <form onSubmit={onSendMessage} className="h-18 w-full mt-3">
           <input
             type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             className="h-full w-full py-5 px-3 focus:outline-none focus:ring-0 rounded-md
             border-none bg-slate-800 text-white placeholder-white"
             placeholder="Leave a message..."

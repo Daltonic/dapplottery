@@ -41,7 +41,7 @@ export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
         <DrawTime jackpot={jackpot} luckyNumbers={luckyNumbers} participants={purchasedNumbers} />
         <Generator />
         <AuthChat />
-        <Chat />
+        <Chat id={lottery?.id} />
       </div>
     </div>
   )
