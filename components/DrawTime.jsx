@@ -9,7 +9,7 @@ import { globalActions } from '@/store/global_reducer'
 import { createNewGroup, joinGroup } from '@/services/chat'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
-  const { setGeneratorModal, setAuthModal, setGroup } = globalActions
+  const { setGeneratorModal, setAuthModal, setChatModal, setGroup } = globalActions
   const { wallet, currentUser, group } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
   const router = useRouter()
@@ -121,7 +121,7 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
                 </button>
               ) : null}
             </>
-          ) : !group ? (
+          ) : group && !group.hasJoined ? (
             <button
               onClick={handleGroupJoin}
               className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
@@ -139,13 +139,23 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
             Draw Result
           </Link>
 
-          <button
-            onClick={() => dispatch(setAuthModal('scale-100'))}
-            className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
+          {!currentUser ? (
+            <button
+              onClick={() => dispatch(setAuthModal('scale-100'))}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
                 hover:bg-amber-600 font-semibold"
-          >
-            Chat
-          </button>
+            >
+              Login Chat
+            </button>
+          ) : (
+            <button
+              onClick={() => dispatch(setChatModal('scale-100'))}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
+            hover:bg-amber-600 font-semibold"
+            >
+              Enter Chat
+            </button>
+          )}
         </div>
       </div>
 
