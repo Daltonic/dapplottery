@@ -28,26 +28,25 @@ const loginWithCometChat = async (CometChat, UID) => {
   })
 }
 
-// const signUpWithCometChat = async () => {
-//   const authKey = CONSTANTS.Auth_Key
-//   const UID = getGlobalState('connectedAccount')
-//   const user = new CometChat.User(UID)
+const signUpWithCometChat = async (CometChat, UID) => {
+  const authKey = CONSTANTS.Auth_Key
+  const user = new CometChat.User(UID)
 
-//   user.setName(UID)
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.createUser(user, authKey)
-//       .then((user) => resolve(user))
-//       .catch((error) => reject(error))
-//   })
-// }
+  user.setName(UID)
+  return new Promise(async (resolve, reject) => {
+    await CometChat.createUser(user, authKey)
+      .then((user) => resolve(user))
+      .catch((error) => reject(error))
+  })
+}
 
-// const logOutWithCometChat = async () => {
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.logout()
-//       .then(() => resolve())
-//       .catch(() => reject())
-//   })
-// }
+const logOutWithCometChat = async (CometChat) => {
+  return new Promise(async (resolve, reject) => {
+    await CometChat.logout()
+      .then(() => resolve())
+      .catch(() => reject())
+  })
+}
 
 // const checkAuthState = async () => {
 //   return new Promise(async (resolve, reject) => {
@@ -127,8 +126,8 @@ const loginWithCometChat = async (CometChat, UID) => {
 export {
   initCometChat,
   loginWithCometChat,
-  //   signUpWithCometChat,
-  //   logOutWithCometChat,
+  signUpWithCometChat,
+  logOutWithCometChat,
   //   getMessages,
   //   sendMessage,
   //   checkAuthState,

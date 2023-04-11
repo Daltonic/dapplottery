@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const Header = () => {
   const { wallet } = useSelector((state) => state.globalState)
-  
+
   return (
     <div
       className="px-5 md:px-40"
@@ -62,7 +62,8 @@ const Header = () => {
       </div>
 
       <div className="pb-10">
-        <Link href={'/create'}
+        <Link
+          href={'/create'}
           className="bg-amber-500 hover:bg-rose-600 text-white rounded-md
         cursor-pointer font-semibold py-3 px-5"
         >

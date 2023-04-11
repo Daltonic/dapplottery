@@ -5,7 +5,6 @@ import { connectWallet, truncate } from '@/services/blockchain'
 
 const SubHeader = () => {
   const { wallet } = useSelector((state) => state.globalState)
-  
   return (
     <div
       style={{ background: `url('${background.src}') fixed no-repeat top/cover` }}

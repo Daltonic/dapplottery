@@ -1,11 +1,12 @@
-import { AppProps } from 'next/app'
-import { store } from '../store'
-import { Provider } from 'react-redux'
-import 'react-toastify/dist/ReactToastify.css'
 import '@/styles/global.css'
+import { store } from '../store'
+import { AppProps } from 'next/app'
+import { Provider } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { isWallectConnected } from '@/services/blockchain'
+import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
+import CometChatSSR from '@/components/CometChatNoSSR'
+import { isWallectConnected } from '@/services/blockchain'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [showChild, setShowChild] = useState(false)
@@ -20,6 +21,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   } else {
     return (
       <Provider store={store}>
+        <CometChatSSR />
         <Component {...pageProps} />
 
         <ToastContainer

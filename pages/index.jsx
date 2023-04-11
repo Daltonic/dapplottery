@@ -2,11 +2,8 @@ import Head from 'next/head'
 import Header from '../components/Header'
 import Jackpots from '../components/Jackpots'
 import { getLotteries } from '@/services/blockchain.srr'
-import { initCometChat } from '@/services/chat'
 
 export default function Home({ jackpots }) {
-  window.CometChat = require('@cometchat-pro/chat').CometChat
-  initCometChat(window.CometChat)
   return (
     <div>
       <Head>

@@ -1,14 +1,14 @@
+import Link from 'next/link'
+import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
-import { useDispatch, useSelector } from 'react-redux'
 import { FaEthereum } from 'react-icons/fa'
 import Countdown from '@/components/Countdown'
-import { globalActions } from '@/store/global_reducer'
 import { buyTicket } from '@/services/blockchain'
-import { toast } from 'react-toastify'
-import Link from 'next/link'
+import { useDispatch, useSelector } from 'react-redux'
+import { globalActions } from '@/store/global_reducer'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
-  const { setGeneratorModal } = globalActions
+  const { setGeneratorModal, setAuthModal } = globalActions
   const { wallet } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
   const router = useRouter()
@@ -78,6 +78,14 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           >
             Draw Result
           </Link>
+
+          <button
+            onClick={() => dispatch(setAuthModal('scale-100'))}
+            className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
+                hover:bg-amber-600 font-semibold"
+          >
+            Chat
+          </button>
         </div>
       </div>
 

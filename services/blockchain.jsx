@@ -18,6 +18,7 @@ const {
   setPurchasedNumbers,
   setJackpot,
   setResult,
+  setCurrentUser,
 } = globalActions
 const contractAddress = address.address
 const contractAbi = abi.abi
@@ -47,6 +48,7 @@ const isWallectConnected = async () => {
 
     window.ethereum.on('accountsChanged', async () => {
       store.dispatch(updateWallet(accounts[0]?.toLowerCase()))
+      store.dispatch(setCurrentUser(null))
       await isWallectConnected()
     })
 
