@@ -1,11 +1,11 @@
 import Head from 'next/head'
-import Winners from '@/components/Winners'
-import Result from '@/components/Result'
-import SubHeader from '@/components/SubHeader'
-import { getLottery, getLotteryResult, getParticipants } from '@/services/blockchain.srr'
 import { useEffect } from 'react'
+import Result from '@/components/Result'
+import Winners from '@/components/Winners'
+import SubHeader from '@/components/SubHeader'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
+import { getLottery, getLotteryResult, getParticipants } from '@/services/blockchain.srr'
 
 export default function Results({ lottery, participantList, lotteryResult }) {
   const { participants, jackpot, result } = useSelector((state) => state.globalState)

@@ -11,10 +11,11 @@ const CometChatNoSSR = () => {
 
   useEffect(() => {
     initCometChat(CometChat).then(() => {
-      checkAuthState(CometChat).then((user) =>
+      checkAuthState(CometChat).then((user) => {
         dispatch(setCurrentUser(JSON.parse(JSON.stringify(user))))
-      )
+      })
     })
+    
     window.ethereum.on('accountsChanged', async () => {
       logOutWithCometChat(CometChat).then(() => console.log('Logged out'))
     })

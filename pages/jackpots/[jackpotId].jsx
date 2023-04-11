@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import AuthChat from '@/components/AuthChat'
 import DrawTime from '@/components/DrawTime'
 import SubHeader from '@/components/SubHeader'
@@ -7,16 +7,25 @@ import Generator from '@/components/Generator'
 import { useSelector, useDispatch } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
 import { getLottery, getLuckyNumbers, getPurchasedNumbers } from '@/services/blockchain.srr'
+import { getGroup, getMessages } from '@/services/chat'
 
 export default function Draws({ lottery, lotteryNumbers, numbersPurchased }) {
-  const { luckyNumbers, purchasedNumbers, jackpot } = useSelector((state) => state.globalState)
-  const { setLuckyNumbers, setPurchasedNumbers, setJackpot } = globalActions
+  const { luckyNumbers, purchasedNumbers, jackpot, wallet } = useSelector(
+    (state) => state.globalState
+  )
+  const { setLuckyNumbers, setPurchasedNumbers, setJackpot, setGroup } = globalActions
   const dispatch = useDispatch()
+  const { CometChat } = window
 
   useEffect(() => {
     dispatch(setJackpot(lottery))
     dispatch(setLuckyNumbers(lotteryNumbers))
     dispatch(setPurchasedNumbers(numbersPurchased))
+
+    setTimeout(async () => {
+      const groupData = await getGroup(CometChat, `guid_${lottery?.id}`)
+      if (groupData) dispatch(setGroup(JSON.parse(JSON.stringify(groupData))))
+    }, 500)
   }, [])
 
   return (
