@@ -6,11 +6,11 @@ import Countdown from '@/components/Countdown'
 import { buyTicket } from '@/services/blockchain'
 import { useDispatch, useSelector } from 'react-redux'
 import { globalActions } from '@/store/global_reducer'
-import { createNewGroup } from '@/services/chat'
+import { createNewGroup, joinGroup } from '@/services/chat'
 
 const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
   const { setGeneratorModal, setAuthModal, setGroup } = globalActions
-  const { wallet, currentUser } = useSelector((state) => state.globalState)
+  const { wallet, currentUser, group } = useSelector((state) => state.globalState)
   const dispatch = useDispatch()
   const router = useRouter()
   const { jackpotId } = router.query
@@ -48,6 +48,25 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       {
         pending: 'Creating group...',
         success: 'Group created successfully 👌',
+        error: 'Encountered error 🤯',
+      }
+    )
+  }
+
+  const handleGroupJoin = async () => {
+    if (!currentUser) return toast.warning('Please authenticate chat')
+    await toast.promise(
+      new Promise(async (resolve, reject) => {
+        await joinGroup(CometChat, `guid_${jackpot?.id}`)
+          .then((group) => {
+            dispatch(setGroup(JSON.parse(JSON.stringify(group))))
+            resolve()
+          })
+          .catch(() => reject())
+      }),
+      {
+        pending: 'Joining group...',
+        success: 'Group joined successfully 👌',
         error: 'Encountered error 🤯',
       }
     )
@@ -92,14 +111,24 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
                 Generate Lucky Numbers
               </button>
 
-              <button
-                onClick={handleGroupCreation}
-                className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
+              {!group ? (
+                <button
+                  onClick={handleGroupCreation}
+                  className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
                 hover:bg-rose-600 font-semibold text-white"
-              >
-                Create Group
-              </button>
+                >
+                  Create Group
+                </button>
+              ) : null}
             </>
+          ) : !group ? (
+            <button
+              onClick={handleGroupJoin}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
+                hover:bg-rose-600 font-semibold text-white"
+            >
+              Join Group
+            </button>
           ) : null}
 
           <Link

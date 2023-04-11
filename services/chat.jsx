@@ -76,21 +76,21 @@ const getGroup = async (CometChat, GUID) => {
   })
 }
 
-// const joinGroup = async (GUID) => {
-//   const groupType = CometChat.GROUP_TYPE.PUBLIC
-//   const password = ''
+const joinGroup = async (CometChat, GUID) => {
+  const groupType = CometChat.GROUP_TYPE.PUBLIC
+  const password = ''
 
-//   return new Promise(async (resolve, reject) => {
-//     await CometChat.joinGroup(GUID, groupType, password)
-//       .then((group) => resolve(group))
-//       .catch((error) => reject(error))
-//   })
-// }
+  return new Promise(async (resolve, reject) => {
+    await CometChat.joinGroup(GUID, groupType, password)
+      .then((group) => resolve(group))
+      .catch((error) => reject(error))
+  })
+}
 
-const getMessages = async (CometChat, UID) => {
+const getMessages = async (CometChat, GUID) => {
   const limit = 30
   const messagesRequest = new CometChat.MessagesRequestBuilder()
-    .setGUID(UID)
+    .setGUID(GUID)
     .setLimit(limit)
     .build()
 
@@ -132,7 +132,7 @@ export {
   createNewGroup,
   getGroup,
   getMessages,
+  joinGroup,
   //   sendMessage,
-  //   joinGroup,
   //   listenForMessage,
 }
