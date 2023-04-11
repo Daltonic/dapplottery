@@ -8,6 +8,11 @@ module.exports = {
     localhost: {
       url: 'http://127.0.0.1:8545',
     },
+    mumbai: {
+      url: process.env.MUMBAI_URL,
+      chainId: 80001,
+      accounts: [process.env.DEPLOYER_KEY],
+    },
   },
   solidity: {
     version: '0.8.17',
