@@ -46,7 +46,7 @@ To run the demo follow these steps:
 
 2. Head to [CometChat](https://try.cometchat.com/daltonic) and create a project.
 
-3. Create a `.env` file to include the following details.
+3. Create a `.env.local` file to include the following details.
    ```sh
     NEXT_PUBLIC_APP_ID=<APP_ID>
     NEXT_PUBLIC_AUTH_KEY=<AUTH_KEY>
