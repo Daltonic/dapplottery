@@ -51,8 +51,6 @@ To run the demo follow these steps:
     NEXT_PUBLIC_APP_ID=<APP_ID>
     NEXT_PUBLIC_AUTH_KEY=<AUTH_KEY>
     NEXT_PUBLIC_REGION=<REGION>
-    NEXT_PUBLIC_MUMBAI_URL=<MUMBAI_URL>
-    NEXT_PUBLIC_LOCALHOST_URL=<LOCALHOST_URL>
    ```
 4. Run the app using `yarn start`
    <br/>
