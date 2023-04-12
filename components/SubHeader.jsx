@@ -11,7 +11,7 @@ const SubHeader = () => {
       className="flex items-center justify-between text-white px-10 py-5"
     >
       <div>
-        <Link href="/" className="text-3xl font-bold">
+        <Link href="/" className="text-xl font-bold">
           DappLottery
         </Link>
       </div>
@@ -26,7 +26,7 @@ const SubHeader = () => {
       {wallet ? (
         <button
           className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold"
+          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
         >
           {truncate(wallet, 4, 4, 11)}
         </button>
@@ -34,7 +34,7 @@ const SubHeader = () => {
         <button
           onClick={connectWallet}
           className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold"
+          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
         >
           Connect Wallet
         </button>

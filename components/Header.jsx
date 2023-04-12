@@ -15,7 +15,7 @@ const Header = () => {
     >
       <div className="flex items-center justify-between text-white py-5">
         <div>
-          <h1 className="text-3xl font-bold">DappLottery</h1>
+          <h1 className="text-xl font-bold">DappLottery</h1>
         </div>
 
         <div className="hidden lg:flex items-center space-x-3 font-semibold">
@@ -28,7 +28,7 @@ const Header = () => {
         {wallet ? (
           <button
             className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold"
+          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
           >
             {truncate(wallet, 4, 4, 11)}
           </button>
@@ -36,7 +36,7 @@ const Header = () => {
           <button
             onClick={connectWallet}
             className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-          hover:bg-rose-600 cursor-pointer font-semibold"
+          hover:bg-rose-600 cursor-pointer font-semibold text-sm"
           >
             Connect Wallet
           </button>
