@@ -52,7 +52,7 @@ async function main() {
   const contract = await Contract.deploy(servicePercent)
   await contract.deployed()
 
-  const iterations = 4
+  const iterations = 6
   let tx, result
 
   const createAppartment = async ({ title, description, prize, ticketPrice, expiresAt, image }) => {

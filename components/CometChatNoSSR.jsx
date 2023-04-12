@@ -1,4 +1,4 @@
-import { initCometChat, logOutWithCometChat, checkAuthState } from '@/services/chat'
+import { initCometChat, checkAuthState } from '@/services/chat'
 import { useEffect } from 'react'
 import { globalActions } from '@/store/global_reducer'
 import { useDispatch } from 'react-redux'

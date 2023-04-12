@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import CometChatSSR from '@/components/CometChatNoSSR'
-// import { isWallectConnected } from '@/services/blockchain'
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [showChild, setShowChild] = useState(false)
