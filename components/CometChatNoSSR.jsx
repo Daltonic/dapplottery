@@ -2,6 +2,7 @@ import { initCometChat, logOutWithCometChat, checkAuthState } from '@/services/c
 import { useEffect } from 'react'
 import { globalActions } from '@/store/global_reducer'
 import { useDispatch } from 'react-redux'
+import { isWallectConnected } from '@/services/blockchain'
 
 const CometChatNoSSR = () => {
   window.CometChat = require('@cometchat-pro/chat').CometChat
@@ -15,10 +16,8 @@ const CometChatNoSSR = () => {
         dispatch(setCurrentUser(JSON.parse(JSON.stringify(user))))
       })
     })
-    
-    window.ethereum.on('accountsChanged', async () => {
-      logOutWithCometChat(CometChat).then(() => console.log('Logged out'))
-    })
+
+    isWallectConnected(CometChat)
   }, [])
   return null
 }

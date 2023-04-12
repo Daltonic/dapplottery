@@ -10,6 +10,7 @@ import {
   getPurchasedNumbers,
 } from '@/services/blockchain.srr'
 import { ethers } from 'ethers'
+import { logOutWithCometChat } from './chat'
 
 const {
   updateWallet,
@@ -37,7 +38,7 @@ const getEthereumContract = async () => {
   return contract
 }
 
-const isWallectConnected = async () => {
+const isWallectConnected = async (CometChat) => {
   try {
     if (!ethereum) return notifyUser('Please install Metamask')
     const accounts = await ethereum.request({ method: 'eth_accounts' })
@@ -49,7 +50,8 @@ const isWallectConnected = async () => {
     window.ethereum.on('accountsChanged', async () => {
       store.dispatch(updateWallet(accounts[0]))
       store.dispatch(setCurrentUser(null))
-      await isWallectConnected()
+      logOutWithCometChat(CometChat).then(() => console.log('Logged out'))
+      await isWallectConnected(CometChat)
     })
 
     if (accounts.length) {
