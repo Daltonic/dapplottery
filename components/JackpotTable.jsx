@@ -3,21 +3,20 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { FaEthereum } from 'react-icons/fa'
 import Countdown from '@/components/Countdown'
-import { buyTicket } from '@/services/blockchain'
+import { globalActions } from '@/store/globalSlices'
 import { useDispatch, useSelector } from 'react-redux'
-import { globalActions } from '@/store/global_reducer'
-import { createNewGroup, joinGroup } from '@/services/chat'
+import { buyTicket } from '@/services/blockchain'
 
-const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
-  const { setGeneratorModal, setAuthModal, setChatModal, setGroup } = globalActions
-  const { wallet, currentUser, group } = useSelector((state) => state.globalState)
-  const dispatch = useDispatch()
+const JackpotTable = ({ jackpot, luckyNumbers, participants }) => {
   const router = useRouter()
   const { jackpotId } = router.query
-  const { CometChat } = window
+  const { setGeneratorModal } = globalActions
+  const dispatch = useDispatch()
+  const { wallet } = useSelector((states) => states.globalStates)
 
   const handlePurchase = async (luckyNumberId) => {
     if (!wallet) return toast.warning('Connect your wallet')
+
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await buyTicket(jackpotId, luckyNumberId, jackpot?.ticketPrice)
@@ -29,45 +28,6 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
       {
         pending: 'Approve transaction...',
         success: 'Ticket purchased successfully 👌',
-        error: 'Encountered error 🤯',
-      }
-    )
-  }
-
-  const handleGroupCreation = async () => {
-    if (!currentUser) return toast.warning('Please authenticate chat')
-    await toast.promise(
-      new Promise(async (resolve, reject) => {
-        await createNewGroup(CometChat, `guid_${jackpot?.id}`, jackpot?.title)
-          .then((group) => {
-            dispatch(setGroup(JSON.parse(JSON.stringify(group))))
-            resolve()
-          })
-          .catch(() => reject())
-      }),
-      {
-        pending: 'Creating group...',
-        success: 'Group created successfully 👌',
-        error: 'Encountered error 🤯',
-      }
-    )
-  }
-
-  const handleGroupJoin = async () => {
-    if (!currentUser) return toast.warning('Please authenticate chat')
-    await toast.promise(
-      new Promise(async (resolve, reject) => {
-        await joinGroup(CometChat, `guid_${jackpot?.id}`)
-          .then((group) => {
-            dispatch(setGroup(JSON.parse(JSON.stringify(group))))
-            resolve()
-            window.location.reload()
-          })
-          .catch(() => reject())
-      }),
-      {
-        pending: 'Joining group...',
-        success: 'Group joined successfully 👌',
         error: 'Encountered error 🤯',
       }
     )
@@ -96,39 +56,13 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
 
         <div className="flex justify-center items-center space-x-2">
           {wallet?.toLowerCase() == jackpot?.owner ? (
-            <>
-              <button
-                disabled={jackpot?.expiresAt < Date.now()}
-                onClick={onGenerate}
-                className={`flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
-                hover:bg-rose-600 font-semibold
-                ${
-                  jackpot?.expiresAt < Date.now()
-                    ? 'opacity-50 cursor-not-allowed'
-                    : 'hover:bg-rose-600'
-                }
-                `}
-              >
-                Generate Lucky Numbers
-              </button>
-
-              {!group ? (
-                <button
-                  onClick={handleGroupCreation}
-                  className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
-                hover:bg-rose-600 font-semibold text-white"
-                >
-                  Create Group
-                </button>
-              ) : null}
-            </>
-          ) : group && !group.hasJoined ? (
             <button
-              onClick={handleGroupJoin}
-              className="flex flex-nowrap border py-2 px-4 rounded-full bg-gray-500
-                hover:bg-rose-600 font-semibold text-white"
+              disabled={Date.now() > jackpot?.expiresAt}
+              onClick={onGenerate}
+              className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
+            hover:bg-rose-600 font-semibold"
             >
-              Join Group
+              Generate Lucky Numbers
             </button>
           ) : null}
 
@@ -139,24 +73,6 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
           >
             Draw Result
           </Link>
-
-          {!currentUser ? (
-            <button
-              onClick={() => dispatch(setAuthModal('scale-100'))}
-              className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
-                hover:bg-amber-600 font-semibold"
-            >
-              Login Chat
-            </button>
-          ) : (
-            <button
-              onClick={() => dispatch(setChatModal('scale-100'))}
-              className="flex flex-nowrap border py-2 px-4 rounded-full bg-green-500
-            hover:bg-amber-600 font-semibold"
-            >
-              Enter Chat
-            </button>
-          )}
         </div>
       </div>
 
@@ -189,7 +105,6 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
                 <td className="px-4 py-2 font-semibold">{luckyNumber}</td>
                 <td className="px-4 py-2 font-semibold">
                   <button
-                    disabled={participants.includes(luckyNumber)}
                     onClick={() => handlePurchase(i)}
                     className={`bg-black ${
                       participants.includes(luckyNumber)
@@ -209,4 +124,4 @@ const DrawTime = ({ jackpot, luckyNumbers, participants }) => {
   )
 }
 
-export default DrawTime
+export default JackpotTable

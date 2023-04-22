@@ -16,6 +16,7 @@ contract DappLottery is Ownable {
         uint256 prize;
         uint256 ticketPrice;
         uint256 participants;
+        uint256 winners;
         bool drawn;
         address owner;
         uint256 createdAt;
@@ -37,14 +38,14 @@ contract DappLottery is Ownable {
         ParticipantStruct[] winners;
     }
 
-    uint256 public servicePercent;
-    uint256 public serviceBalance;
-
     mapping(uint256 => LotteryStruct) lotteries;
     mapping(uint256 => ParticipantStruct[]) lotteryParticipants;
     mapping(uint256 => string[]) lotteryLuckyNumbers;
     mapping(uint256 => mapping(uint256 => bool)) luckyNumberUsed;
     mapping(uint256 => LotteryResultStruct) lotteryResult;
+
+    uint256 public servicePercent;
+    uint256 public serviceBalance;
 
     constructor(uint256 _servicePercent) {
         servicePercent = _servicePercent;
@@ -64,7 +65,7 @@ contract DappLottery is Ownable {
         require(prize > 0 ether, "prize cannot be zero");
         require(ticketPrice > 0 ether, "ticketPrice cannot be zero");
         require(
-            expiresAt > block.timestamp,
+            expiresAt > currentTime(),
             "expireAt cannot be less than the future"
         );
 
@@ -78,7 +79,7 @@ contract DappLottery is Ownable {
         lottery.prize = prize;
         lottery.ticketPrice = ticketPrice;
         lottery.owner = msg.sender;
-        lottery.createdAt = block.timestamp;
+        lottery.createdAt = currentTime();
         lottery.expiresAt = expiresAt;
 
         lotteries[lottery.id] = lottery;
@@ -87,10 +88,9 @@ contract DappLottery is Ownable {
     function importLuckyNumbers(uint256 id, string[] memory luckyNumbers)
         public
     {
+        require(luckyNumbers.length > 0, "Lucky numbers cannot be zero");
         require(lotteries[id].owner == msg.sender, "Unauthorized entity");
         require(lotteryLuckyNumbers[id].length < 1, "Already generated");
-        require(lotteries[id].participants < 1, "Tickets have been purchased");
-        require(luckyNumbers.length > 0, "Lucky numbers cannot be zero");
         lotteryLuckyNumbers[id] = luckyNumbers;
     }
 
@@ -101,7 +101,7 @@ contract DappLottery is Ownable {
         );
         require(
             msg.value >= lotteries[id].ticketPrice,
-            "insufficient ethers to buy ethers"
+            "insufficient ethers to buy ticket"
         );
 
         lotteries[id].participants++;
@@ -112,17 +112,15 @@ contract DappLottery is Ownable {
                 false
             )
         );
+
         luckyNumberUsed[id][luckyNumberId] = true;
         serviceBalance += msg.value;
     }
 
-    function randomlySelectWinners(
-        uint256 id,
-        uint256 numOfWinners
-    ) public {
+    function randomlySelectWinners(uint256 id, uint256 numOfWinners) public {
         require(
             lotteries[id].owner == msg.sender ||
-            lotteries[id].owner == owner(),
+            msg.sender == owner(),
             "Unauthorized entity"
         );
         require(!lotteryResult[id].completed, "Lottery have already been completed");
@@ -144,7 +142,7 @@ contract DappLottery is Ownable {
         // Shuffle the list of indices using Fisher-Yates algorithm
         for (uint256 i = participants.length - 1; i >= 1; i--) {
             uint256 j = uint256(
-                keccak256(abi.encodePacked(block.timestamp, i))
+                keccak256(abi.encodePacked(currentTime(), i))
             ) % (i + 1);
             uint256 temp = indices[j];
             indices[j] = indices[i];
@@ -157,9 +155,10 @@ contract DappLottery is Ownable {
             lotteryResult[id].winners.push(winners[i]);
         }
 
-        lotteryResult[id].id = id;
         lotteryResult[id].completed = true;
-        lotteryResult[id].timestamp = block.timestamp;
+        lotteryResult[id].timestamp = currentTime();
+        lotteries[id].winners = lotteryResult[id].winners.length;
+        lotteries[id].drawn = true;
 
         payLotteryWinners(id);
     }
@@ -176,6 +175,7 @@ contract DappLottery is Ownable {
 
         payTo(owner(), platformShare);
         serviceBalance -= totalShares;
+        lotteryResult[id].id = id;
         lotteryResult[id].paidout = true;
         lotteryResult[id].sharePerWinner = sharesPerWinner;
     }
@@ -191,7 +191,7 @@ contract DappLottery is Ownable {
     function getLottery(uint256 id) public view returns (LotteryStruct memory) {
         return lotteries[id];
     }
-    
+
     function getLotteryParticipants(uint256 id) public view returns (ParticipantStruct[] memory) {
         return lotteryParticipants[id];
     }
@@ -204,8 +204,14 @@ contract DappLottery is Ownable {
         return lotteryResult[id];
     }
 
+
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
         require(success);
+    }
+
+    function currentTime() internal view returns (uint256) {
+        uint256 newNum = (block.timestamp * 1000) + 1000;
+        return newNum;
     }
 }

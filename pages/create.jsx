@@ -1,15 +1,11 @@
 import Head from 'next/head'
 import { useState } from 'react'
-import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
-import { useSelector } from 'react-redux'
-import SubHeader from '../components/SubHeader'
+import SubHeader from '@/components/SubHeader'
 import { createJackpot } from '@/services/blockchain'
+import { toast } from 'react-toastify'
 
-export default function Create() {
-  const { wallet } = useSelector((state) => state.globalState)
-  const router = useRouter()
-
+function Create() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [imageUrl, setImageUrl] = useState('')
@@ -17,9 +13,10 @@ export default function Create() {
   const [ticketPrice, setTicketPrice] = useState('')
   const [expiresAt, setExpiresAt] = useState('')
 
+  const router = useRouter()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!wallet) return toast.warning('Wallet not connected')
 
     if (!title || !description || !imageUrl || !prize || !ticketPrice || !expiresAt) return
     const params = {
@@ -34,16 +31,16 @@ export default function Create() {
     await toast.promise(
       new Promise(async (resolve, reject) => {
         await createJackpot(params)
-          .then(async () => {
-            onReset()
+          .then(() => {
             router.push('/')
+            onReset()
             resolve()
           })
           .catch(() => reject())
       }),
       {
         pending: 'Approve transaction...',
-        success: 'Jackpot created successfully 👌',
+        success: 'Lottery created successfully 👌',
         error: 'Encountered error 🤯',
       }
     )
@@ -67,8 +64,9 @@ export default function Create() {
 
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
+
         <div className="flex flex-col justify-center items-center mt-20">
-          <div className=" flex flex-col items-center justify-center my-5">
+          <div className="flex flex-col items-center justify-center my-5">
             <h1 className="text-2xl font-bold text-slate-800 py-5">Create Jackpots</h1>
             <p className="text-center text-sm text-slate-600">
               We bring a persolan and effective every project we work on. <br />
@@ -172,3 +170,5 @@ export default function Create() {
     </div>
   )
 }
+
+export default Create

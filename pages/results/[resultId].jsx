@@ -1,38 +1,40 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
-import Result from '@/components/Result'
 import Winners from '@/components/Winners'
 import SubHeader from '@/components/SubHeader'
+import ResultTable from '@/components/ResultTable'
+import { globalActions } from '@/store/globalSlices'
 import { useDispatch, useSelector } from 'react-redux'
-import { globalActions } from '@/store/global_reducer'
-import { getLottery, getLotteryResult, getParticipants } from '@/services/blockchain.srr'
+import { getLottery, getParticipants, getLotteryResult } from '@/services/blockchain'
+import { useEffect } from 'react'
 
-export default function Results({ lottery, participantList, lotteryResult }) {
-  const { participants, jackpot, result } = useSelector((state) => state.globalState)
-  const { setParticipants, setJackpot, setResult } = globalActions
+function Result({ lottery, participantList, lotteryResult }) {
+  const { setJackpot, setResult, setParticipants } = globalActions
+  const { participants, jackpot, result } = useSelector((states) => states.globalStates)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(setResult(lotteryResult))
     dispatch(setJackpot(lottery))
     dispatch(setParticipants(participantList))
+    dispatch(setResult(lotteryResult))
   }, [])
 
   return (
     <div>
       <Head>
-        <title>Dapp Lottery | Results</title>
+        <title>Dapp Lottery - Result</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="min-h-screen bg-slate-100">
         <SubHeader />
-        <Result jackpot={jackpot} participants={participants} result={result} />
+        <ResultTable jackpot={jackpot} participants={participants} result={result} />
         <Winners />
       </div>
     </div>
   )
 }
+
+export default Result
 
 export const getServerSideProps = async (context) => {
   const { resultId } = context.query

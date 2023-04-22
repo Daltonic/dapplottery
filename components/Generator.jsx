@@ -2,17 +2,17 @@ import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 import { FaTimes } from 'react-icons/fa'
-import { exportLuckyNumbers } from '@/services/blockchain'
-import { useSelector, useDispatch } from 'react-redux'
-import { globalActions } from '@/store/global_reducer'
+import { globalActions } from '@/store/globalSlices'
+import { useDispatch, useSelector } from 'react-redux'
+import { exportLuckyNumbers, generateLuckyNumbers } from '@/services/blockchain'
 
 const Generator = () => {
   const router = useRouter()
-  const dispatch = useDispatch()
   const { jackpotId } = router.query
-  const { setGeneratorModal } = globalActions
   const [luckyNumbers, setLuckyNumbers] = useState('')
-  const { generatorModal } = useSelector((state) => state.globalState)
+  const { setGeneratorModal } = globalActions
+  const dispatch = useDispatch()
+  const { generatorModal } = useSelector((states) => states.globalStates)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,20 +33,6 @@ const Generator = () => {
         error: 'Encountered error 🤯',
       }
     )
-  }
-
-  const generateLuckyNumbers = (count) => {
-    const result = []
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    const charactersLength = characters.length
-    for (let i = 0; i < count; i++) {
-      let string = ''
-      for (let j = 0; j < 6; j++) {
-        string += characters.charAt(Math.floor(Math.random() * charactersLength))
-      }
-      result.push(string)
-    }
-    return result
   }
 
   return (

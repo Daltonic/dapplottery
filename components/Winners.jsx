@@ -1,28 +1,29 @@
 import { useState } from 'react'
-import { toast } from 'react-toastify'
-import { useRouter } from 'next/router'
 import { FaTimes } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
+import { globalActions } from '@/store/globalSlices'
+import { toast } from 'react-toastify'
 import { performDraw } from '@/services/blockchain'
-import { useSelector, useDispatch } from 'react-redux'
-import { globalActions } from '@/store/global_reducer'
+import { useRouter } from 'next/router'
 
 const Winners = () => {
   const router = useRouter()
-  const dispatch = useDispatch()
   const { resultId } = router.query
-  const { setWinnerModal } = globalActions
-  const [numberOfwinner, setNumberOfwinner] = useState('')
-  const { winnerModal } = useSelector((state) => state.globalState)
+  const [numberOfwinners, setNumberOfwinners] = useState('')
+
+  const { setWinnersModal } = globalActions
+  const dispatch = useDispatch()
+  const { winnersModal } = useSelector((states) => states.globalStates)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     await toast.promise(
       new Promise(async (resolve, reject) => {
-        await performDraw(resultId, numberOfwinner)
+        await performDraw(resultId, numberOfwinners)
           .then(async () => {
-            setNumberOfwinner('')
-            dispatch(setWinnerModal('scale-0'))
+            setNumberOfwinners('')
+            dispatch(setWinnersModal('scale-0'))
             resolve()
           })
           .catch(() => reject())
@@ -39,7 +40,7 @@ const Winners = () => {
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex
       items-center justify-center bg-black bg-opacity-50
-      transform transition-transform duration-300 ${winnerModal}`}
+      transform transition-transform duration-300 ${winnersModal}`}
     >
       <div
         className="bg-white shadow-xl shadow-[#0c2856] rounded-xl
@@ -49,7 +50,7 @@ const Winners = () => {
           <div className="flex justify-between items-center">
             <p className="font-semibold">Emerging Winners</p>
             <button
-              onClick={() => dispatch(setWinnerModal('scale-0'))}
+              onClick={() => dispatch(setWinnersModal('scale-0'))}
               type="button"
               className="border-0 bg-transparent focus:outline-none"
             >
@@ -68,10 +69,10 @@ const Winners = () => {
               type="number"
               step={1}
               min={1}
-              name="numberOfwinner"
-              placeholder="Lucky Numbers e.g 19"
-              onChange={(e) => setNumberOfwinner(e.target.value)}
-              value={numberOfwinner}
+              name="numberOfwinners"
+              placeholder="Winners e.g 3"
+              onChange={(e) => setNumberOfwinners(e.target.value)}
+              value={numberOfwinners}
             />
           </div>
 

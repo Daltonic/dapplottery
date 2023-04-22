@@ -1,13 +1,13 @@
 import Link from 'next/link'
-import background from '@/assets/background.jpg'
 import { useSelector } from 'react-redux'
 import { connectWallet, truncate } from '@/services/blockchain'
+const background = 'https://dapplottery.vercel.app/_next/static/media/background.a7d45fa2.jpg'
 
 const SubHeader = () => {
-  const { wallet } = useSelector((state) => state.globalState)
+  const { wallet } = useSelector((states) => states.globalStates)
   return (
     <div
-      style={{ background: `url('${background.src}') fixed no-repeat top/cover` }}
+      style={{ background: `url('${background}') fixed no-repeat top/cover` }}
       className="flex items-center justify-between text-white px-10 py-5"
     >
       <div>
@@ -32,9 +32,9 @@ const SubHeader = () => {
         </button>
       ) : (
         <button
-          onClick={connectWallet}
           className="flex flex-nowrap border py-2 px-4 rounded-full bg-amber-500
           hover:bg-rose-600 cursor-pointer font-semibold text-sm"
+          onClick={connectWallet}
         >
           Connect Wallet
         </button>

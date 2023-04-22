@@ -1,5 +1,6 @@
 const { expect } = require('chai')
 const { faker } = require('@faker-js/faker')
+const { ethers } = require('hardhat')
 
 const toWei = (num) => ethers.utils.parseEther(num.toString())
 const fromWei = (num) => ethers.utils.formatEther(num)
@@ -29,14 +30,14 @@ describe('DappLottery', () => {
   let Contract, contract, result
   const servicePercent = 5
   const title = faker.random.words(5)
-  const description = faker.lorem.paragraph()
+  const description = faker.lorem.paragraph(5)
   const image = faker.image.imageUrl()
-  const ticketPrice = toWei(0.01)
   const prize = toWei(10)
+  const ticketPrice = toWei(0.01)
   const expiresAt = addDays(7)
   const lotteryId = 1
-  const numberOfWinners = 2
   const numberToGenerate = 5
+  const numberOfWinners = 2
 
   beforeEach(async () => {
     Contract = await ethers.getContractFactory('DappLottery')
@@ -44,7 +45,6 @@ describe('DappLottery', () => {
       await ethers.getSigners()
 
     contract = await Contract.deploy(servicePercent)
-
     await contract.deployed()
   })
 
@@ -74,7 +74,7 @@ describe('DappLottery', () => {
       await contract.createLottery(title, description, image, prize, ticketPrice, expiresAt)
     })
 
-    it('Should confirm lucky numbers import', async () => {
+    it('Should confirm lucky number import', async () => {
       result = await contract.getLotteryLuckyNumbers(lotteryId)
       expect(result).to.have.lengthOf(0)
 
@@ -85,7 +85,7 @@ describe('DappLottery', () => {
     })
   })
 
-  describe('Buying Tickets', () => {
+  describe('Buying of Tickets', () => {
     beforeEach(async () => {
       await contract.createLottery(title, description, image, prize, ticketPrice, expiresAt)
       await contract.importLuckyNumbers(lotteryId, generateLuckyNumbers(numberToGenerate))
@@ -94,6 +94,7 @@ describe('DappLottery', () => {
     it('Should confirm ticket purchase', async () => {
       result = await contract.getLottery(lotteryId)
       expect(result.participants.toNumber()).to.be.equal(0)
+
       result = await contract.getLotteryParticipants(lotteryId)
       expect(result).to.have.lengthOf(0)
 
@@ -103,6 +104,7 @@ describe('DappLottery', () => {
 
       result = await contract.getLottery(lotteryId)
       expect(result.participants.toNumber()).to.be.equal(1)
+
       result = await contract.getLotteryParticipants(lotteryId)
       expect(result).to.have.lengthOf(1)
     })
@@ -111,31 +113,26 @@ describe('DappLottery', () => {
   describe('Selecting Winners', () => {
     beforeEach(async () => {
       await contract.createLottery(title, description, image, prize, ticketPrice, expiresAt)
-
       await contract.importLuckyNumbers(lotteryId, generateLuckyNumbers(numberToGenerate))
 
       await contract.connect(participant1).buyTicket(lotteryId, numberToGenerate - 1, {
         value: ticketPrice,
       })
-
       await contract.connect(participant2).buyTicket(lotteryId, numberToGenerate - 2, {
         value: ticketPrice,
       })
-
       await contract.connect(participant3).buyTicket(lotteryId, numberToGenerate - 3, {
         value: ticketPrice,
       })
-
       await contract.connect(participant4).buyTicket(lotteryId, numberToGenerate - 4, {
         value: ticketPrice,
       })
-
       await contract.connect(participant5).buyTicket(lotteryId, numberToGenerate - 5, {
         value: ticketPrice,
       })
     })
 
-    it('Should confirm random winner selection', async () => {
+    it('Should confirm random selection of winners', async () => {
       result = await contract.getLotteryParticipants(lotteryId)
       expect(result).to.have.lengthOf(numberToGenerate)
 
@@ -152,33 +149,29 @@ describe('DappLottery', () => {
   describe('Paying Winners', () => {
     beforeEach(async () => {
       await contract.createLottery(title, description, image, prize, ticketPrice, expiresAt)
-
       await contract.importLuckyNumbers(lotteryId, generateLuckyNumbers(numberToGenerate))
 
       await contract.connect(participant1).buyTicket(lotteryId, numberToGenerate - 1, {
         value: ticketPrice,
       })
-
       await contract.connect(participant2).buyTicket(lotteryId, numberToGenerate - 2, {
         value: ticketPrice,
       })
-
       await contract.connect(participant3).buyTicket(lotteryId, numberToGenerate - 3, {
         value: ticketPrice,
       })
-
       await contract.connect(participant4).buyTicket(lotteryId, numberToGenerate - 4, {
         value: ticketPrice,
       })
-
       await contract.connect(participant5).buyTicket(lotteryId, numberToGenerate - 5, {
         value: ticketPrice,
       })
     })
 
-    it('Should confirm payment of winners', async () => {
-      result = await contract.serviceBalance()
-      expect(Number(result)).to.be.equal(Number(toWei(numberToGenerate * fromWei(ticketPrice))))
+    it('Should confirm random selection of winners', async () => {
+      result = await contract.getLottery(lotteryId)
+      expect(result.winners.toNumber()).to.be.equal(0)
+      expect(result.drawn).to.be.equal(false)
 
       result = await contract.getLotteryResult(lotteryId)
       expect(result.winners).to.have.lengthOf(0)
@@ -186,12 +179,13 @@ describe('DappLottery', () => {
 
       await contract.randomlySelectWinners(lotteryId, numberOfWinners)
 
+      result = await contract.getLottery(lotteryId)
+      expect(result.winners.toNumber()).to.be.equal(numberOfWinners)
+      expect(result.drawn).to.be.equal(true)
+
       result = await contract.getLotteryResult(lotteryId)
       expect(result.winners).to.have.lengthOf(numberOfWinners)
       expect(result.paidout).to.be.equal(true)
-
-      result = await contract.serviceBalance()
-      expect(result.toNumber()).to.be.equal(0)
     })
   })
 })
